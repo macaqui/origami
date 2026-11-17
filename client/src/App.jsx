@@ -17,21 +17,28 @@ function App() {
   const [busqueda, setBusqueda] = useState('');
   const [hojaEditando, setHojaEditando] = useState(null);
 
-  const cargarDatos = async () => {
-    try {
-      setCargando(true);
-      const data = await listarHojas();
-      setHojas(data);
-      setError('');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setCargando(false);
-    }
-  };
-
+  // Carga inicial desde la API. El estado se actualiza solo dentro de los
+  // callbacks de la promesa, y se ignora el resultado si el componente ya se
+  // desmontó (patrón estándar de limpieza en React).
   useEffect(() => {
-    cargarDatos();
+    let activo = true;
+
+    listarHojas()
+      .then((data) => {
+        if (!activo) return;
+        setHojas(data);
+        setError('');
+      })
+      .catch((err) => {
+        if (activo) setError(err.message);
+      })
+      .finally(() => {
+        if (activo) setCargando(false);
+      });
+
+    return () => {
+      activo = false;
+    };
   }, []);
 
   const handleGuardar = async (datosHoja) => {
@@ -111,6 +118,7 @@ function App() {
       <main className="layout-principal">
         <aside>
           <HojaForm
+            key={hojaEditando ? hojaEditando.id : 'nueva'}
             onGuardar={handleGuardar}
             hojaEditando={hojaEditando}
             onCancelarEdicion={() => setHojaEditando(null)}

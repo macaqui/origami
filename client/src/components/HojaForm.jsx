@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
+// El estado inicial se deriva de la prop `hojaEditando`. Para cambiar de hoja
+// (o volver al modo creación) App remonta el componente con una `key` distinta,
+// así que no hace falta ningún efecto que sincronice props con estado.
 function HojaForm({ onGuardar, hojaEditando, onCancelarEdicion }) {
-  const [titulo, setTitulo] = useState('');
-  const [contenido, setContenido] = useState('');
-  const [categoria, setCategoria] = useState('Desarrollo');
-  const [prioridad, setPrioridad] = useState('Media');
+  const [titulo, setTitulo] = useState(hojaEditando?.titulo ?? '');
+  const [contenido, setContenido] = useState(hojaEditando?.contenido ?? '');
+  const [categoria, setCategoria] = useState(hojaEditando?.categoria ?? 'Desarrollo');
+  const [prioridad, setPrioridad] = useState(hojaEditando?.prioridad ?? 'Media');
   const [errorForm, setErrorForm] = useState('');
 
   const limpiarCampos = () => {
@@ -14,18 +17,6 @@ function HojaForm({ onGuardar, hojaEditando, onCancelarEdicion }) {
     setPrioridad('Media');
     setErrorForm('');
   };
-
-  useEffect(() => {
-    if (hojaEditando) {
-      setTitulo(hojaEditando.titulo);
-      setContenido(hojaEditando.contenido);
-      setCategoria(hojaEditando.categoria);
-      setPrioridad(hojaEditando.prioridad);
-      setErrorForm('');
-    } else {
-      limpiarCampos();
-    }
-  }, [hojaEditando]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
