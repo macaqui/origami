@@ -1,0 +1,21 @@
+# Levanta MySQL y carga automáticamente server/database.sql.
+# Uso:  docker compose up -d
+# Luego: cd server && cp .env.example .env && npm run dev
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: origami-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: origami_db
+      MYSQL_USER: origami
+      MYSQL_PASSWORD: origami123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./server/database.sql:/docker-entrypoint-initdb.d/01-database.sql:ro
+
+volumes:
+  mysql_data:
