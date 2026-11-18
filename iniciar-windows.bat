@@ -8,7 +8,10 @@ echo ============================================================
 echo.
 
 where node >nul 2>nul
-if errorlevel 1 (echo [X] No encontre Node.js. Instalalo desde https://nodejs.org - version LTS - y vuelve a ejecutar. & echo. & pause & exit /b 1)
+if errorlevel 1 echo [X] No encontre Node.js. Instalalo desde https://nodejs.org - version LTS - y vuelve a ejecutar.
+if errorlevel 1 echo.
+if errorlevel 1 pause
+if errorlevel 1 exit /b 1
 
 echo [1/4] Dependencias del backend...
 cd server
@@ -27,13 +30,11 @@ echo.
 
 echo [3/4] Compilando la interfaz...
 call npm run build
-if not exist "dist\index.html" (
-  echo.
-  echo [X] La interfaz no se pudo compilar. Causas tipicas:
-  echo     - Este PC no tiene internet y las dependencias no estaban instaladas.
-  echo     - En ese caso usa  arrancar-sin-internet.bat  ^(la version que ya trae todo^).
-  echo.
-)
+if not exist "dist\index.html" echo.
+if not exist "dist\index.html" echo [X] La interfaz no se pudo compilar. Causas tipicas:
+if not exist "dist\index.html" echo     - Este PC no tiene internet y las dependencias no estaban instaladas.
+if not exist "dist\index.html" echo     - En ese caso usa  arrancar-sin-internet.bat  (la version que ya trae todo).
+if not exist "dist\index.html" echo.
 echo.
 
 echo [4/4] Arrancando el servidor...
