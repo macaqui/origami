@@ -1,25 +1,18 @@
-import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
 
-dotenv.config();
+// Cliente único de Prisma (ORM). Todas las consultas a MySQL/MariaDB pasan por
+// aquí, así que no hay SQL escrito a mano en los controladores.
+const prisma = new PrismaClient();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'origami_db',
-  waitForConnections: true,
-  connectionLimit: 10
-});
-
-// Verificación inicial de conexión para detectar errores rápido
-pool.getConnection()
-  .then((connection) => {
-    console.log('✅ Conexión exitosa a MySQL (origami_db)');
-    connection.release();
+// Verificación inicial de conexión para detectar errores rápido.
+prisma
+  .$connect()
+  .then(() => {
+    console.log('✅ Conexión exitosa a MySQL (origami_db) vía Prisma');
   })
   .catch((error) => {
     console.error('❌ Error conectando a MySQL:', error.message);
   });
 
-export default pool;
+export default prisma;

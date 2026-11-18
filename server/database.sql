@@ -8,11 +8,19 @@ CREATE TABLE IF NOT EXISTS hojas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   titulo VARCHAR(120) NOT NULL,
   contenido TEXT NOT NULL,
-  categoria ENUM('Desarrollo', 'Base de Datos', 'Estudio', 'Personal') DEFAULT 'Desarrollo',
-  prioridad ENUM('Baja', 'Media', 'Alta') DEFAULT 'Media',
+  -- Los valores permitidos se validan en la capa de la API (hojasController.js).
+  -- Se usan VARCHAR (y no ENUM) porque Prisma mapea estos campos como String.
+  categoria VARCHAR(50) DEFAULT 'Desarrollo',
+  prioridad VARCHAR(20) DEFAULT 'Media',
   plegada TINYINT(1) DEFAULT 0,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Si la base ya existía con "categoria" y "prioridad" como ENUM, las pasamos a
+-- VARCHAR: Prisma mapea esos campos como String. Repetirlo no hace daño.
+ALTER TABLE hojas
+  MODIFY categoria VARCHAR(50) DEFAULT 'Desarrollo',
+  MODIFY prioridad VARCHAR(20) DEFAULT 'Media';
 
 INSERT INTO hojas (titulo, contenido, categoria, prioridad, plegada) VALUES
 ('Configurar API en Express', 'Crear rutas GET, POST, PUT y DELETE conectadas a MySQL.', 'Desarrollo', 'Alta', 1),

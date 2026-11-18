@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import {
   listarHojas,
+  obtenerHoja,
   crearHoja,
   actualizarHoja,
   eliminarHoja
 } from './services/hojasService';
 import HojaForm from './components/HojaForm';
 import HojaCard from './components/HojaCard';
+import Origami3D from './components/Origami3D';
 import './App.css';
 
 function App() {
@@ -16,6 +18,7 @@ function App() {
   const [filtroCategoria, setFiltroCategoria] = useState('Todas');
   const [busqueda, setBusqueda] = useState('');
   const [hojaEditando, setHojaEditando] = useState(null);
+  const [hojaDetalle, setHojaDetalle] = useState(null);
 
   // Carga inicial desde la API. El estado se actualiza solo dentro de los
   // callbacks de la promesa, y se ignora el resultado si el componente ya se
@@ -81,6 +84,18 @@ function App() {
       if (hojaEditando && hojaEditando.id === id) {
         setHojaEditando(null);
       }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // 5.ª petición a la API: trae una sola hoja (GET /api/hojas/:id) y la
+  // muestra en la tarjeta de origami 3D.
+  const handleVer = async (hoja) => {
+    try {
+      const detalle = await obtenerHoja(hoja.id);
+      setHojaDetalle(detalle);
+      setError('');
     } catch (err) {
       setError(err.message);
     }
@@ -158,12 +173,30 @@ function App() {
                   onTogglePlegar={handleTogglePlegar}
                   onEditar={setHojaEditando}
                   onEliminar={handleEliminar}
+                  onVer={handleVer}
                 />
               ))}
             </div>
           )}
         </section>
       </main>
+
+      {hojaDetalle && (
+        <div className="modal-fondo" onClick={() => setHojaDetalle(null)}>
+          <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="modal-cerrar"
+              onClick={() => setHojaDetalle(null)}
+              aria-label="Cerrar"
+            >
+              ×
+            </button>
+            <p className="modal-titulo">Vista 3D — Origami</p>
+            <Origami3D hoja={hojaDetalle} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

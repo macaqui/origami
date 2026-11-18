@@ -9,7 +9,8 @@ técnicas por categoría y prioridad.
 > **¿Por qué "Origami"?** Cada nota es una *hoja*. Cuando la terminas, la **pliegas**:
 > la tarjeta queda atenuada y tachada, pero nunca se pierde — puedes **desplegarla**
 > otra vez en cualquier momento. El gestor cuenta con un formulario lateral, un
-> buscador en vivo y filtros por categoría.
+> buscador en vivo, filtros por categoría y una **vista 3D** donde cada hoja se
+> convierte en una grulla de papel que gira al hacer clic.
 
 ![Captura de la aplicación](docs/captura-app.jpeg)
 
@@ -19,9 +20,9 @@ técnicas por categoría y prioridad.
 
 | Capa | Tecnología |
 | --- | --- |
-| Frontend | React 19 + Vite 8 + CSS3 (tema oscuro) |
-| Backend | Node.js + Express 4 |
-| Base de datos | MySQL 8 / MariaDB (driver `mysql2/promise`, pool de conexiones) |
+| Frontend | React 19 + Vite 8 + CSS3 (tema oscuro y figura 3D en CSS) |
+| Backend | Node.js + Express 4 (API REST) |
+| Base de datos | MySQL 8 / MariaDB con el ORM **Prisma 6** |
 | Pruebas | Vitest + Supertest |
 | Otros | `dotenv`, `cors`, `oxlint` |
 
@@ -35,8 +36,9 @@ origami/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── HojaCard.jsx    # Tarjeta de una hoja (plegar / editar / eliminar)
-│   │   │   └── HojaForm.jsx    # Formulario de creación y edición
+│   │   │   ├── HojaCard.jsx    # Tarjeta de una hoja (ver 3D / plegar / editar / eliminar)
+│   │   │   ├── HojaForm.jsx    # Formulario de creación y edición
+│   │   │   └── Origami3D.jsx   # Figura de origami con volteo 3D en CSS
 │   │   ├── services/
 │   │   │   └── hojasService.js # Capa de acceso a la API REST
 │   │   ├── App.css
@@ -46,9 +48,10 @@ origami/
 │   ├── index.html
 │   ├── vite.config.js
 │   └── package.json
-├── server/                     # Backend (Node.js + Express + MySQL)
+├── server/                     # Backend (Node.js + Express + Prisma + MySQL)
+│   ├── prisma/schema.prisma    # Modelo de datos (ORM Prisma)
 │   ├── src/
-│   │   ├── config/db.js        # Pool de conexiones a MySQL
+│   │   ├── config/db.js        # Cliente de Prisma (conexión a MySQL)
 │   │   ├── controllers/hojasController.js
 │   │   ├── routes/hojasRoutes.js
 │   │   ├── app.js              # Definición de la app Express (middlewares y rutas)
@@ -85,7 +88,7 @@ origami/
 
 ```bash
 docker compose up -d          # levanta MySQL y carga database.sql automáticamente
-cd server && cp .env.example .env && npm install && npm run dev
+cd server && cp .env.example .env && npm install && npx prisma generate && npm run dev
 cd ../client && cp .env.example .env && npm install && npm run dev
 ```
 
@@ -102,8 +105,9 @@ mysql -u root -p < server/database.sql
 
 ```bash
 cd server
-cp .env.example .env      # ajusta usuario y contraseña de MySQL si hace falta
+cp .env.example .env      # define DATABASE_URL (usuario y contraseña de MySQL)
 npm install
+npx prisma generate       # genera el cliente del ORM (una sola vez)
 npm run dev               # http://localhost:3001
 ```
 
@@ -133,6 +137,7 @@ enlace. Si prefieres el paso a paso manual:
 mysql -u root -p < server\database.sql
 cd server
 npm ci
+npx prisma generate
 copy .env.example .env
 cd ..\client
 npm ci
@@ -155,6 +160,10 @@ Base: `http://localhost:3001/api`
 | `POST` | `/hojas` | Crea una hoja | `201`, `400`, `500` |
 | `PUT` | `/hojas/:id` | Actualiza contenido, categoría, prioridad o estado plegado | `200`, `400`, `404`, `500` |
 | `DELETE` | `/hojas/:id` | Elimina una hoja | `200`, `404`, `500` |
+
+Son **5 operaciones CRUD** sobre la entidad `Hoja`, y el frontend las consume
+con **5 `fetch`** (uno por operación) desde `client/src/services/hojasService.js`:
+`listarHojas`, `obtenerHoja`, `crearHoja`, `actualizarHoja` y `eliminarHoja`.
 
 **Ejemplo — crear una hoja:**
 
@@ -187,9 +196,9 @@ Tabla `hojas`:
 | `id` | `INT AUTO_INCREMENT` | Llave primaria |
 | `titulo` | `VARCHAR(120)` | Obligatorio |
 | `contenido` | `TEXT` | Obligatorio |
-| `categoria` | `ENUM('Desarrollo','Base de Datos','Estudio','Personal')` | Por defecto `Desarrollo` |
-| `prioridad` | `ENUM('Baja','Media','Alta')` | Por defecto `Media` |
-| `plegada` | `TINYINT(1)` | `0` activa / `1` plegada |
+| `categoria` | `VARCHAR(50)` | Por defecto `Desarrollo` (validado en la API) |
+| `prioridad` | `VARCHAR(20)` | Por defecto `Media` (validado en la API) |
+| `plegada` | `TINYINT(1)` / `Boolean` | `0` activa / `1` plegada |
 | `fecha_creacion` | `TIMESTAMP` | `CURRENT_TIMESTAMP` |
 
 **Diagrama entidad-relación:**
@@ -200,10 +209,10 @@ erDiagram
         int     id PK "AUTO_INCREMENT"
         varchar titulo "NOT NULL, 120"
         text    contenido "NOT NULL"
-        enum    categoria "Desarrollo | Base de Datos | Estudio | Personal"
-        enum    prioridad "Baja | Media | Alta"
-        tinyint plegada "0 activa / 1 plegada"
-        timestamp fecha_creacion "CURRENT_TIMESTAMP"
+        varchar categoria "Desarrollo | Base de Datos | Estudio | Personal"
+        varchar prioridad "Baja | Media | Alta"
+        boolean plegada "false activa / true plegada"
+        datetime fecha_creacion "now()"
     }
 ```
 
@@ -278,8 +287,12 @@ comandos exactos y una tabla de solución de problemas.
 - **Separación en capas**: `routes → controllers → config/db` en el backend y
   `components` + `services` en el frontend, para que la lógica de acceso a datos
   no se mezcle con la interfaz.
-- **Consultas parametrizadas** (`?`) en las cuatro operaciones → protección
-  contra inyección SQL.
+- **ORM Prisma** en vez de SQL escrito a mano: las consultas se construyen con
+  el cliente tipado (`prisma.hoja.findMany`, `.create`, `.update`, `.delete`),
+  sin concatenar cadenas, lo que evita la inyección SQL.
+- **Figura de origami 3D sin librerías**: el volteo usa CSS
+  (`perspective` + `transform-style: preserve-3d` + `rotateY`), como la tarjeta
+  de la cívica, en lugar de cargar Three.js.
 - **Validación en el servidor**, no solo en el formulario.
 - **Usuario de base de datos dedicado** (`origami`) en lugar de `root`.
 - **Credenciales fuera del repositorio**: `.env` está en `.gitignore` y solo se

@@ -1,15 +1,16 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
 import app from '../src/app.js';
-import pool from '../src/config/db.js';
+import prisma from '../src/config/db.js';
 
 // Pruebas de integración: requieren MySQL/MariaDB en ejecución
 // con la base de datos creada por server/database.sql.
+// El acceso a datos pasa por Prisma (ver prisma/schema.prisma).
 
 let idCreado;
 
 afterAll(async () => {
-  await pool.end();
+  await prisma.$disconnect();
 });
 
 describe('Origami API', () => {
@@ -42,7 +43,7 @@ describe('Origami API', () => {
 
     expect(res.status).toBe(201);
     expect(res.body.id).toBeTypeOf('number');
-    expect(res.body.plegada).toBe(0);
+    expect(res.body.plegada).toBe(false);
     idCreado = res.body.id;
   });
 
@@ -62,7 +63,7 @@ describe('Origami API', () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.body.plegada).toBe(1);
+    expect(res.body.plegada).toBe(true);
   });
 
   it('PUT /api/hojas/:id sin "plegada" conserva el estado actual', async () => {
@@ -74,7 +75,7 @@ describe('Origami API', () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.body.plegada).toBe(1);
+    expect(res.body.plegada).toBe(true);
   });
 
   it('PUT /api/hojas/:id con id inexistente devuelve 404', async () => {

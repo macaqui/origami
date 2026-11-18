@@ -1,4 +1,4 @@
-function HojaCard({ hoja, onTogglePlegar, onEditar, onEliminar }) {
+function HojaCard({ hoja, onTogglePlegar, onEditar, onEliminar, onVer }) {
   const estaPlegada = Boolean(hoja.plegada);
   const fechaFormateada = new Date(hoja.fecha_creacion).toLocaleDateString('es-CO', {
     day: '2-digit',
@@ -27,6 +27,13 @@ function HojaCard({ hoja, onTogglePlegar, onEditar, onEliminar }) {
             onClick={() => onTogglePlegar(hoja)}
           >
             {estaPlegada ? 'Desplegar' : 'Plegar'}
+          </button>
+          <button
+            type="button"
+            className="btn-ver"
+            onClick={() => onVer(hoja)}
+          >
+            Ver 3D
           </button>
           <button
             type="button"

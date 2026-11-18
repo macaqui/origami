@@ -26,6 +26,7 @@ systemctl status mariadb          # si está caída: sudo systemctl start mariad
 # 2. Backend (terminal 1)
 cd server
 npm install
+npx prisma generate               # genera el cliente del ORM (una sola vez)
 npm run dev                       # http://localhost:3001
 
 # 3. Frontend (terminal 2)
@@ -66,6 +67,7 @@ Si prefieres hacerlo a mano:
 mysql -u root -p < server\database.sql
 cd server
 npm ci
+npx prisma generate
 copy .env.example .env
 cd ..\client
 npm ci
@@ -81,9 +83,9 @@ npm start
 > descarga las dependencias. Si ese PC no tiene internet, lleva la carpeta
 > `node_modules` ya instalada desde tu PC.
 
-**Si aparece `Access denied for user 'origami'`:** abre `server\.env` y cambia
-`DB_HOST=localhost` por `DB_HOST=127.0.0.1` (el script `database.sql` crea el
-usuario para los dos hosts justamente por esto).
+**Si aparece `Access denied for user 'origami'`:** abre `server\.env` y, dentro
+de `DATABASE_URL`, cambia `localhost` por `127.0.0.1` (el script `database.sql`
+crea el usuario para los dos hosts justamente por esto).
 
 ---
 
@@ -107,6 +109,7 @@ npm run build
 
 # 2. Arrancar el backend: ahora sirve la interfaz Y la API en el mismo puerto
 cd ../server
+npx prisma generate               # solo la primera vez
 npm start                         # http://localhost:3001 ya muestra la app
 
 # 3. En OTRA terminal: abrir el túnel
@@ -177,7 +180,7 @@ Entra al **phpMyAdmin** que da el proveedor, selecciona tu base y usa
 | **Language** | `Node` |
 | **Branch** | `main` |
 | **Root Directory** | *(vacío)* |
-| **Build Command** | `cd server && npm ci && cd ../client && npm ci && npm run build` |
+| **Build Command** | `cd server && npm ci && npx prisma generate && cd ../client && npm ci && npm run build` |
 | **Start Command** | `node server/src/index.js` |
 | **Instance Type** | `Free` |
 
@@ -185,10 +188,7 @@ Entra al **phpMyAdmin** que da el proveedor, selecciona tu base y usa
 
 | Variable | Valor |
 | --- | --- |
-| `DB_HOST` | el host que te dio el proveedor |
-| `DB_USER` | tu usuario de base de datos |
-| `DB_PASSWORD` | tu contraseña |
-| `DB_NAME` | el nombre de la base |
+| `DATABASE_URL` | `mysql://USUARIO:CLAVE@HOST:PUERTO/BASE` (todo en una línea) |
 | `CORS_ORIGIN` | *(déjalo vacío: al compartir origen no hace falta)* |
 
 5. **Create Web Service**. Render compila y te da una URL del tipo
@@ -215,17 +215,20 @@ gh repo edit macaqui/origami --homepage "https://origami-xxxx.onrender.com"
 | La URL pública no carga nada | El túnel se cerró | Relanza `cloudflared tunnel --url http://localhost:3001` (da otra URL) |
 | Error de CORS en la consola | Abriste la interfaz en `5173` pero la API está en otro sitio | Usa la URL del backend (`3001`) o el túnel: ahí comparten origen |
 | `ECONNREFUSED` a MySQL | La base no está arriba | `sudo systemctl start mariadb` |
+| `@prisma/client did not initialize yet` | Falta generar el cliente | `cd server && npx prisma generate` |
+| Prisma: error `P2032` en `categoria` | La tabla tiene esas columnas como ENUM | Vuelve a importar `database.sql` (ya las pasa a VARCHAR) |
 | `npm test` falla | No hay base de datos corriendo | Levántala: las pruebas son de **integración** |
 | `cloudflared: command not found` | No lo instalaste | `sudo pacman -S cloudflared` |
 | Windows: `'cp' no se reconoce como comando` | Usaste comandos de Linux | Usa `iniciar-windows.bat`, o `copy` en vez de `cp` |
-| Windows: `Access denied for user 'origami'` | El host de conexión no coincide | Cambia `DB_HOST` a `127.0.0.1` en `server\.env` |
+| Windows: `Access denied for user 'origami'` | El host de conexión no coincide | En `server\.env`, cambia `localhost` por `127.0.0.1` dentro de `DATABASE_URL` |
 | Windows: `mysql` no se reconoce | MySQL no está en el PATH | Importa la base con MySQL Workbench, o usa `C:\xampp\mysql\bin\mysql.exe` |
 
 ---
 
 ## Qué decir mientras lo muestras
 
-> "El proyecto está separado en tres capas: React, Express y MySQL. Para
+> "El proyecto está separado en tres capas: React, Express y MySQL, y en el
+> backend uso Prisma como ORM. Para
 > desplegarlo aproveché que Express puede servir también la interfaz compilada:
 > así todo queda en **un solo origen**, no hay problemas de CORS y basta una
 > única URL. En desarrollo trabajo con Vite y el backend separados, y con la

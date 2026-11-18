@@ -1,45 +1,62 @@
-import pool from '../config/db.js';
+import prisma from '../config/db.js';
+
+// Las 5 operaciones CRUD de la entidad "Hoja", todas con Prisma (ORM).
+//   1. obtenerHojas       -> LEER todas
+//   2. obtenerHojaPorId   -> LEER una
+//   3. crearHoja          -> CREAR
+//   4. actualizarHoja     -> EDITAR
+//   5. eliminarHoja       -> BORRAR
 
 const CATEGORIAS_VALIDAS = ['Desarrollo', 'Base de Datos', 'Estudio', 'Personal'];
 const PRIORIDADES_VALIDAS = ['Baja', 'Media', 'Alta'];
 
-// Normaliza el campo "plegada": null significa "no modificar el valor actual".
+// Convierte el valor recibido de "plegada" a booleano.
+// null significa "no modificar el valor actual" (no vino en la petición).
 const normalizarPlegada = (valor) => {
   if (valor === undefined || valor === null) return null;
-  return valor === true || valor === 1 || valor === '1' || valor === 'true' ? 1 : 0;
+  return valor === true || valor === 1 || valor === '1' || valor === 'true';
 };
 
-// GET /api/hojas - Listar todas las hojas
+// Valida que el id de la URL sea un entero positivo.
+const idValido = (valor) => {
+  const id = Number(valor);
+  return Number.isInteger(id) && id > 0 ? id : null;
+};
+
+// GET /api/hojas - Listar todas las hojas (1)
 export const obtenerHojas = async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      'SELECT * FROM hojas ORDER BY plegada ASC, fecha_creacion DESC'
-    );
-    res.status(200).json(rows);
+    const hojas = await prisma.hoja.findMany({
+      orderBy: [{ plegada: 'asc' }, { fecha_creacion: 'desc' }]
+    });
+    res.status(200).json(hojas);
   } catch (error) {
     console.error('Error en obtenerHojas:', error);
     res.status(500).json({ mensaje: 'Error interno al consultar las hojas' });
   }
 };
 
-// GET /api/hojas/:id - Obtener una hoja por su id
+// GET /api/hojas/:id - Obtener una hoja por su id (2)
 export const obtenerHojaPorId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const [rows] = await pool.query('SELECT * FROM hojas WHERE id = ?', [id]);
-
-    if (rows.length === 0) {
+    const id = idValido(req.params.id);
+    if (id === null) {
       return res.status(404).json({ mensaje: 'Hoja no encontrada' });
     }
 
-    res.status(200).json(rows[0]);
+    const hoja = await prisma.hoja.findUnique({ where: { id } });
+    if (!hoja) {
+      return res.status(404).json({ mensaje: 'Hoja no encontrada' });
+    }
+
+    res.status(200).json(hoja);
   } catch (error) {
     console.error('Error en obtenerHojaPorId:', error);
     res.status(500).json({ mensaje: 'Error interno al consultar la hoja' });
   }
 };
 
-// POST /api/hojas - Crear una nueva hoja
+// POST /api/hojas - Crear una nueva hoja (3)
 export const crearHoja = async (req, res) => {
   try {
     const { titulo, contenido, categoria, prioridad } = req.body;
@@ -50,29 +67,30 @@ export const crearHoja = async (req, res) => {
       });
     }
 
-    const catFinal = CATEGORIAS_VALIDAS.includes(categoria) ? categoria : 'Desarrollo';
-    const prioFinal = PRIORIDADES_VALIDAS.includes(prioridad) ? prioridad : 'Media';
+    const hoja = await prisma.hoja.create({
+      data: {
+        titulo: titulo.trim(),
+        contenido: contenido.trim(),
+        categoria: CATEGORIAS_VALIDAS.includes(categoria) ? categoria : 'Desarrollo',
+        prioridad: PRIORIDADES_VALIDAS.includes(prioridad) ? prioridad : 'Media'
+      }
+    });
 
-    const [result] = await pool.query(
-      'INSERT INTO hojas (titulo, contenido, categoria, prioridad) VALUES (?, ?, ?, ?)',
-      [titulo.trim(), contenido.trim(), catFinal, prioFinal]
-    );
-
-    const [nuevaHoja] = await pool.query('SELECT * FROM hojas WHERE id = ?', [
-      result.insertId
-    ]);
-
-    res.status(201).json(nuevaHoja[0]);
+    res.status(201).json(hoja);
   } catch (error) {
     console.error('Error en crearHoja:', error);
     res.status(500).json({ mensaje: 'Error interno al crear la hoja' });
   }
 };
 
-// PUT /api/hojas/:id - Actualizar contenido o estado de plegado
+// PUT /api/hojas/:id - Actualizar una hoja (4)
 export const actualizarHoja = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = idValido(req.params.id);
+    if (id === null) {
+      return res.status(404).json({ mensaje: 'Hoja no encontrada' });
+    }
+
     const { titulo, contenido, categoria, prioridad, plegada } = req.body;
 
     if (!titulo || !titulo.trim() || !contenido || !contenido.trim()) {
@@ -81,39 +99,46 @@ export const actualizarHoja = async (req, res) => {
       });
     }
 
-    const catFinal = CATEGORIAS_VALIDAS.includes(categoria) ? categoria : 'Desarrollo';
-    const prioFinal = PRIORIDADES_VALIDAS.includes(prioridad) ? prioridad : 'Media';
-
-    // COALESCE deja intacto el valor actual si el cliente no envía "plegada".
-    const [result] = await pool.query(
-      `UPDATE hojas
-       SET titulo = ?, contenido = ?, categoria = ?, prioridad = ?, plegada = COALESCE(?, plegada)
-       WHERE id = ?`,
-      [titulo.trim(), contenido.trim(), catFinal, prioFinal, normalizarPlegada(plegada), id]
-    );
-
-    if (result.affectedRows === 0) {
+    const existe = await prisma.hoja.findUnique({ where: { id } });
+    if (!existe) {
       return res.status(404).json({ mensaje: 'Hoja no encontrada' });
     }
 
-    const [hojaActualizada] = await pool.query('SELECT * FROM hojas WHERE id = ?', [id]);
-    res.status(200).json(hojaActualizada[0]);
+    const datos = {
+      titulo: titulo.trim(),
+      contenido: contenido.trim(),
+      categoria: CATEGORIAS_VALIDAS.includes(categoria) ? categoria : 'Desarrollo',
+      prioridad: PRIORIDADES_VALIDAS.includes(prioridad) ? prioridad : 'Media'
+    };
+
+    // Solo se modifica "plegada" si el cliente lo envió (antes era un COALESCE).
+    const plegadaNormalizada = normalizarPlegada(plegada);
+    if (plegadaNormalizada !== null) {
+      datos.plegada = plegadaNormalizada;
+    }
+
+    const hoja = await prisma.hoja.update({ where: { id }, data: datos });
+    res.status(200).json(hoja);
   } catch (error) {
     console.error('Error en actualizarHoja:', error);
     res.status(500).json({ mensaje: 'Error interno al actualizar la hoja' });
   }
 };
 
-// DELETE /api/hojas/:id - Eliminar una hoja
+// DELETE /api/hojas/:id - Eliminar una hoja (5)
 export const eliminarHoja = async (req, res) => {
   try {
-    const { id } = req.params;
-    const [result] = await pool.query('DELETE FROM hojas WHERE id = ?', [id]);
-
-    if (result.affectedRows === 0) {
+    const id = idValido(req.params.id);
+    if (id === null) {
       return res.status(404).json({ mensaje: 'Hoja no encontrada' });
     }
 
+    const existe = await prisma.hoja.findUnique({ where: { id } });
+    if (!existe) {
+      return res.status(404).json({ mensaje: 'Hoja no encontrada' });
+    }
+
+    await prisma.hoja.delete({ where: { id } });
     res.status(200).json({ mensaje: 'Hoja eliminada correctamente' });
   } catch (error) {
     console.error('Error en eliminarHoja:', error);

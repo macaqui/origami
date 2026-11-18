@@ -13,6 +13,14 @@ export const listarHojas = async () => {
   return respuesta.json();
 };
 
+// 5.º fetch: obtiene UNA hoja por su id (GET /api/hojas/:id).
+export const obtenerHoja = async (id) => {
+  const respuesta = await fetch(`${API_URL}/${id}`);
+  const data = await respuesta.json();
+  if (!respuesta.ok) throw new Error(data.mensaje || 'No se pudo obtener la hoja');
+  return data;
+};
+
 export const crearHoja = async (datos) => {
   const respuesta = await fetch(API_URL, {
     method: 'POST',
