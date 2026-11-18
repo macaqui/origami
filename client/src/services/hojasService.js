@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:3001/api/hojas';
+// La URL del backend se configura con la variable VITE_API_URL del archivo .env
+// (ver client/.env.example). Si no está definida, se usa localhost por defecto,
+// de modo que cambiar el puerto o el dominio no obliga a tocar el código.
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/hojas';
 
 export const listarHojas = async () => {
   const respuesta = await fetch(API_URL);

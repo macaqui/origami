@@ -87,7 +87,7 @@ origami/
 ```bash
 docker compose up -d          # levanta MySQL y carga database.sql automáticamente
 cd server && cp .env.example .env && npm install && npm run dev
-cd ../client && npm install && npm run dev
+cd ../client && cp .env.example .env && npm install && npm run dev
 ```
 
 ### Opción B — MySQL/MariaDB local
@@ -112,6 +112,7 @@ npm run dev               # http://localhost:3001
 
 ```bash
 cd client
+cp .env.example .env      # define VITE_API_URL (URL del backend)
 npm install
 npm run dev               # http://localhost:5173
 ```
@@ -167,6 +168,24 @@ Tabla `hojas`:
 | `plegada` | `TINYINT(1)` | `0` activa / `1` plegada |
 | `fecha_creacion` | `TIMESTAMP` | `CURRENT_TIMESTAMP` |
 
+**Diagrama entidad-relación:**
+
+```mermaid
+erDiagram
+    HOJAS {
+        int     id PK "AUTO_INCREMENT"
+        varchar titulo "NOT NULL, 120"
+        text    contenido "NOT NULL"
+        enum    categoria "Desarrollo | Base de Datos | Estudio | Personal"
+        enum    prioridad "Baja | Media | Alta"
+        tinyint plegada "0 activa / 1 plegada"
+        timestamp fecha_creacion "CURRENT_TIMESTAMP"
+    }
+```
+
+La aplicación usa un usuario dedicado (`origami`) con permisos solo sobre
+`origami_db`, en lugar de conectarse como `root`.
+
 ---
 
 ## Pruebas
@@ -221,6 +240,9 @@ estado se ve en el badge de la portada.
 - **Usuario de base de datos dedicado** (`origami`) en lugar de `root`.
 - **Credenciales fuera del repositorio**: `.env` está en `.gitignore` y solo se
   versiona `.env.example`.
+- **URL de la API configurable**: el frontend lee `VITE_API_URL` desde
+  `client/.env` (plantilla en `client/.env.example`), así que cambiar el puerto o
+  el dominio del backend no obliga a tocar el código.
 
 ---
 
