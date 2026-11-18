@@ -23,4 +23,10 @@ INSERT INTO hojas (titulo, contenido, categoria, prioridad, plegada) VALUES
 -- Cambia la contraseña antes de desplegar en un entorno real.
 CREATE USER IF NOT EXISTS 'origami'@'localhost' IDENTIFIED BY 'origami123';
 GRANT ALL PRIVILEGES ON origami_db.* TO 'origami'@'localhost';
+
+-- Se crea también para 127.0.0.1: en Windows las conexiones TCP llegan con esa
+-- IP, así el backend funciona igual si DB_HOST vale localhost o 127.0.0.1.
+CREATE USER IF NOT EXISTS 'origami'@'127.0.0.1' IDENTIFIED BY 'origami123';
+GRANT ALL PRIVILEGES ON origami_db.* TO 'origami'@'127.0.0.1';
+
 FLUSH PRIVILEGES;

@@ -44,6 +44,45 @@ mariadb -u origami -porigami123 origami_db -e "SELECT id, titulo, plegada FROM h
 
 ---
 
+## Plan A2 — Windows (si presentas en un PC con Windows)
+
+Windows no trae el comando `cp` y las rutas van con `\`, así que el repositorio
+incluye un script que hace todo de una vez:
+
+```bat
+:: desde la carpeta del proyecto
+iniciar-windows.bat
+```
+
+Qué hace, en orden: comprueba que **Node.js** esté instalado → importa
+`server\database.sql` la primera vez (te pedirá la contraseña de `root` de
+MySQL; si no tiene, pulsa Enter) → crea `server\.env` desde `.env.example` →
+`npm ci` en `server` y en `client` → `npm run build` en `client` → arranca el
+backend, que sirve **interfaz y API** en `http://localhost:3001`.
+
+Si prefieres hacerlo a mano:
+
+```bat
+mysql -u root -p < server\database.sql
+cd server
+npm ci
+copy .env.example .env
+cd ..\client
+npm ci
+npm run build
+cd ..\server
+npm start
+```
+
+> **Comprueba antes en ese PC:** `node -v` y `mysql --version`. Si alguno falla,
+> no pierdas tiempo ahí: presenta desde tu portátil o usa el Plan B.
+
+**Si aparece `Access denied for user 'origami'`:** abre `server\.env` y cambia
+`DB_HOST=localhost` por `DB_HOST=127.0.0.1` (el script `database.sql` crea el
+usuario para los dos hosts justamente por esto).
+
+---
+
 ## Plan B — URL pública en un minuto, sin crear cuentas ⭐
 
 `cloudflared` (paquete oficial en CachyOS) abre un túnel desde tu PC hacia
@@ -174,6 +213,9 @@ gh repo edit macaqui/origami --homepage "https://origami-xxxx.onrender.com"
 | `ECONNREFUSED` a MySQL | La base no está arriba | `sudo systemctl start mariadb` |
 | `npm test` falla | No hay base de datos corriendo | Levántala: las pruebas son de **integración** |
 | `cloudflared: command not found` | No lo instalaste | `sudo pacman -S cloudflared` |
+| Windows: `'cp' no se reconoce como comando` | Usaste comandos de Linux | Usa `iniciar-windows.bat`, o `copy` en vez de `cp` |
+| Windows: `Access denied for user 'origami'` | El host de conexión no coincide | Cambia `DB_HOST` a `127.0.0.1` en `server\.env` |
+| Windows: `mysql` no se reconoce | MySQL no está en el PATH | Importa la base con MySQL Workbench, o usa `C:\xampp\mysql\bin\mysql.exe` |
 
 ---
 

@@ -67,6 +67,8 @@ origami/
 │   ├── documentacion.md # Guía para defender el proyecto
 │   └── despliegue.md           # Cómo publicarlo online (3 opciones)
 ├── .github/workflows/ci.yml    # Integración continua (pruebas + build automáticos)
+├── iniciar-windows.bat         # Arranque automático en Windows
+├── .gitattributes              # Fuerza saltos de línea CRLF en los .bat
 ├── LICENSE
 ├── .gitignore
 └── README.md
@@ -116,6 +118,32 @@ cd client
 cp .env.example .env      # define VITE_API_URL (URL del backend)
 npm install
 npm run dev               # http://localhost:5173
+```
+
+### Opción C — Windows (arranque automático)
+
+Windows no tiene el comando `cp` y las rutas usan `\`, así que el proyecto
+incluye un script que hace todo por ti: comprueba Node.js, importa la base de
+datos la primera vez, crea el `.env`, instala las dependencias, compila la
+interfaz y arranca el servidor.
+
+```bat
+iniciar-windows.bat
+```
+
+Luego abre `http://localhost:3001` (interfaz y API en el mismo enlace). Si
+prefieres el paso a paso manual:
+
+```bat
+mysql -u root -p < server\database.sql
+cd server
+npm ci
+copy .env.example .env
+cd ..\client
+npm ci
+npm run build
+cd ..\server
+npm start
 ```
 
 ---

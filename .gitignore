@@ -14,6 +14,9 @@ build/
 *.log
 npm-debug.log*
 
+# Marcador local del script de arranque en Windows
+server/.base-importada
+
 # Editores / SO
 .vscode/
 .idea/
