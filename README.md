@@ -1,310 +1,116 @@
 # Origami - Gestor de Notas y Tareas Plegables
 
-[![CI](https://github.com/macaqui/origami/actions/workflows/ci.yml/badge.svg)](https://github.com/macaqui/origami/actions/workflows/ci.yml)
+Proyecto final de la **Técnica en Desarrollo de Software (SENA)**.
 
-Proyecto final de la **Técnica en Desarrollo de Software (SENA)**. Aplicación web
-Full-Stack para crear, organizar, editar, filtrar y *plegar* (completar) notas
-técnicas por categoría y prioridad.
+Es una aplicación web para guardar notas y tareas. Cada nota es una "hoja": cuando
+la terminas la puedes **plegar** (queda tachada y atenuada) y luego **desplegar**
+si necesitas volver a ella. También tiene un buscador, filtros por categoría y un
+botón "Ver 3D" que muestra una grulla de origami hecha con CSS.
 
-La idea del nombre: cada nota es una *hoja*. Cuando la terminas, la pliegas y la
-tarjeta queda atenuada y tachada, pero nunca se pierde, porque puedes desplegarla
-otra vez cuando quieras. El gestor tiene un formulario lateral, un buscador en
-vivo, filtros por categoría y una vista 3D donde cada hoja se convierte en una
-grulla de papel que se pliega y se despliega al hacer clic.
+![Captura de la aplicación](captura-app.jpeg)
 
-![Captura de la aplicación](docs/captura-app.jpeg)
+## Tecnologías
 
----
+- **Frontend:** React 19 + Vite 8 (CSS normal, sin librerías de 3D)
+- **Backend:** Node.js + Express
+- **Base de datos:** MySQL / MariaDB con el ORM **Prisma**
+- **Otros:** dotenv y cors
 
-## Tecnologías utilizadas
+## Qué necesitas
 
-| Capa | Tecnología |
-| --- | --- |
-| Frontend | React 19 + Vite 8 + CSS3 (tema claro tipo papel y figura 3D en CSS) |
-| Backend | Node.js + Express 4 (API REST) |
-| Base de datos | MySQL 8 / MariaDB con el ORM **Prisma 6** |
-| Pruebas | Vitest + Supertest |
-| Otros | `dotenv`, `cors`, `oxlint` |
+- Node.js 20 o superior
+- MySQL 8 o MariaDB
 
----
+## Cómo ejecutarlo
 
-## Estructura del proyecto
-
-```
-origami/
-├── client/                     # Frontend (React + Vite)
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── GrullaPlegable.jsx  # Grulla de origami en 3D (bisagras CSS)
-│   │   │   ├── HojaCard.jsx    # Tarjeta de una hoja (ver 3D / plegar / editar / eliminar)
-│   │   │   ├── HojaForm.jsx    # Formulario de creación y edición
-│   │   │   └── Origami3D.jsx   # Contenido del modal "Ver 3D"
-│   │   ├── services/
-│   │   │   └── hojasService.js # Capa de acceso a la API REST
-│   │   ├── App.css
-│   │   ├── App.jsx             # Estado global, filtros y CRUD
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── vite.config.js
-│   └── package.json
-├── server/                     # Backend (Node.js + Express + Prisma + MySQL)
-│   ├── prisma/schema.prisma    # Modelo de datos (ORM Prisma)
-│   ├── src/
-│   │   ├── config/db.js        # Cliente de Prisma (conexión a MySQL)
-│   │   ├── controllers/hojasController.js
-│   │   ├── routes/hojasRoutes.js
-│   │   ├── app.js              # Definición de la app Express (middlewares y rutas)
-│   │   └── index.js            # Arranque del servidor
-│   ├── tests/hojas.test.js     # Pruebas de integración (Vitest + Supertest)
-│   ├── database.sql            # Esquema, datos de ejemplo y usuario de la app
-│   ├── .env.example
-│   └── package.json
-├── docker-compose.yml          # MySQL listo para usar (opcional)
-├── docs/
-│   ├── captura-app.jpeg        # Captura de la interfaz
-│   └── despliegue.md           # Cómo publicarlo online (3 opciones)
-├── .github/workflows/ci.yml    # Integración continua (pruebas + build automáticos)
-├── iniciar-windows.bat         # Arranque automático en Windows
-├── preparar-base-de-datos.bat  # Crea la base en MySQL (solo la primera vez)
-├── .gitattributes              # Fuerza saltos de línea CRLF en los .bat
-├── LICENSE
-├── .gitignore
-└── README.md
-```
-
----
-
-## Requisitos previos
-
-- **Node.js** 20 o superior y **npm**
-- **MySQL** 8.x o **MariaDB** 10.x en ejecución (o Docker, ver abajo)
-
----
-
-## Instalación y ejecución
-
-### Opción A - Con Docker (la más rápida)
-
-```bash
-docker compose up -d          # levanta MySQL y carga database.sql automáticamente
-cd server && cp .env.example .env && npm install && npx prisma generate && npm run dev
-cd ../client && cp .env.example .env && npm install && npm run dev
-```
-
-### Opción B - MySQL/MariaDB local
-
-**1. Base de datos.** Importa el script (crea la base `origami_db`, la tabla
-`hojas`, 3 registros de ejemplo y el usuario de aplicación `origami`):
+### 1. Crear la base de datos (solo la primera vez)
 
 ```bash
 mysql -u root -p < server/database.sql
 ```
 
-**2. Backend.**
+Eso crea la base `origami_db`, la tabla `hojas`, 3 notas de ejemplo y el usuario
+`origami` que usa la aplicación.
+
+### 2. Arrancar el backend
 
 ```bash
 cd server
-cp .env.example .env      # define DATABASE_URL (usuario y contraseña de MySQL)
+cp .env.example .env
 npm install
-npx prisma generate       # genera el cliente del ORM (una sola vez)
-npm run dev               # http://localhost:3001
+npx prisma generate
+npm run dev
 ```
 
-**3. Frontend.**
+Queda escuchando en `http://localhost:3001`.
+
+### 3. Arrancar el frontend
+
+En otra terminal:
 
 ```bash
 cd client
-cp .env.example .env      # define VITE_API_URL (URL del backend)
+cp .env.example .env
 npm install
-npm run dev               # http://localhost:5173
+npm run dev
 ```
 
-### Opción C - Windows (arranque automático)
+Abre `http://localhost:5173`.
 
-Windows no tiene el comando `cp` y las rutas usan `\`, así que el proyecto
-incluye dos scripts que se ejecutan con doble clic:
+### En Windows
 
-| Script | Cuándo | Qué hace |
-| --- | --- | --- |
-| `preparar-base-de-datos.bat` | **Solo la primera vez** | Importa `server\database.sql` en MySQL (puede pedirte la contraseña de `root`; si no tiene, pulsa Enter) |
-| `iniciar-windows.bat` | **Cada vez** | Crea el `.env`, instala las dependencias, compila la interfaz y arranca el servidor |
+Hay dos archivos `.bat` para hacerlo con doble clic:
 
-Luego abre `http://localhost:3001`: la interfaz y la API quedan en el mismo
-enlace. Si prefieres el paso a paso manual:
+- `preparar-base-de-datos.bat`: la primera vez, para crear la base.
+- `iniciar-windows.bat`: cada vez, instala, compila y arranca todo en
+  `http://localhost:3001`.
 
-```bat
-mysql -u root -p < server\database.sql
-cd server
-npm ci
-npx prisma generate
-copy .env.example .env
-cd ..\client
-npm ci
-npm run build
-cd ..\server
-npm start
-```
-
----
-
-## API REST
+## La API
 
 Base: `http://localhost:3001/api`
 
-| Método | Endpoint | Descripción | Respuestas |
-| --- | --- | --- | --- |
-| `GET` | `/health` | Verificación de estado del servicio | `200` |
-| `GET` | `/hojas` | Lista las hojas (activas primero, luego por fecha) | `200`, `500` |
-| `GET` | `/hojas/:id` | Obtiene una hoja por su id | `200`, `404`, `500` |
-| `POST` | `/hojas` | Crea una hoja | `201`, `400`, `500` |
-| `PUT` | `/hojas/:id` | Actualiza contenido, categoría, prioridad o estado plegado | `200`, `400`, `404`, `500` |
-| `DELETE` | `/hojas/:id` | Elimina una hoja | `200`, `404`, `500` |
+| Método | Ruta | Qué hace |
+| --- | --- | --- |
+| GET | `/hojas` | Lista todas las hojas |
+| GET | `/hojas/:id` | Trae una hoja |
+| POST | `/hojas` | Crea una hoja |
+| PUT | `/hojas/:id` | Actualiza una hoja |
+| DELETE | `/hojas/:id` | Borra una hoja |
 
-Son **5 operaciones CRUD** sobre la entidad `Hoja`, y el frontend las consume
-con **5 `fetch`** (uno por operación) desde `client/src/services/hojasService.js`:
-`listarHojas`, `obtenerHoja`, `crearHoja`, `actualizarHoja` y `eliminarHoja`.
+Son las 5 operaciones del CRUD sobre la entidad `Hoja`. El frontend las llama con
+5 `fetch` (uno por operación) desde `client/src/services/hojasService.js`.
 
-**Ejemplo - crear una hoja:**
+Ejemplo con `curl` para crear una hoja:
 
 ```bash
 curl -X POST http://localhost:3001/api/hojas \
   -H "Content-Type: application/json" \
-  -d '{"titulo":"Repasar consultas JOIN","contenido":"Practicar INNER y LEFT JOIN.","categoria":"Base de Datos","prioridad":"Alta"}'
+  -d '{"titulo":"Repasar JOIN","contenido":"Practicar INNER y LEFT JOIN.","categoria":"Base de Datos","prioridad":"Alta"}'
 ```
 
-**Ejemplo - plegar la hoja con id 1:**
+## La tabla `hojas`
 
-```bash
-curl -X PUT http://localhost:3001/api/hojas/1 \
-  -H "Content-Type: application/json" \
-  -d '{"titulo":"Configurar API en Express","contenido":"Crear rutas GET, POST, PUT y DELETE conectadas a MySQL.","categoria":"Desarrollo","prioridad":"Alta","plegada":true}'
+| Campo | Tipo |
+| --- | --- |
+| `id` | INT AUTO_INCREMENT (llave primaria) |
+| `titulo` | VARCHAR(120) |
+| `contenido` | TEXT |
+| `categoria` | VARCHAR(50) (Desarrollo, Base de Datos, Estudio, Personal) |
+| `prioridad` | VARCHAR(20) (Baja, Media, Alta) |
+| `plegada` | BOOLEAN (0 activa / 1 plegada) |
+| `fecha_creacion` | TIMESTAMP |
+
+## Estructura
+
 ```
-
-Si en el `PUT` se omite el campo `plegada`, la hoja conserva su estado actual, de
-modo que editar el texto nunca despliega una hoja por accidente.
-
----
-
-## Modelo de datos
-
-Tabla `hojas`:
-
-| Campo | Tipo | Notas |
-| --- | --- | --- |
-| `id` | `INT AUTO_INCREMENT` | Llave primaria |
-| `titulo` | `VARCHAR(120)` | Obligatorio |
-| `contenido` | `TEXT` | Obligatorio |
-| `categoria` | `VARCHAR(50)` | Por defecto `Desarrollo` (validado en la API) |
-| `prioridad` | `VARCHAR(20)` | Por defecto `Media` (validado en la API) |
-| `plegada` | `TINYINT(1)` / `Boolean` | `0` activa / `1` plegada |
-| `fecha_creacion` | `TIMESTAMP` | `CURRENT_TIMESTAMP` |
-
-**Diagrama entidad-relación:**
-
-```mermaid
-erDiagram
-    HOJAS {
-        int     id PK "AUTO_INCREMENT"
-        varchar titulo "NOT NULL, 120"
-        text    contenido "NOT NULL"
-        varchar categoria "Desarrollo | Base de Datos | Estudio | Personal"
-        varchar prioridad "Baja | Media | Alta"
-        boolean plegada "false activa / true plegada"
-        datetime fecha_creacion "now()"
-    }
+origami/
+├── client/    # interfaz (React + Vite)
+├── server/    # API (Express + Prisma)
+├── iniciar-windows.bat
+├── preparar-base-de-datos.bat
+└── README.md
 ```
-
-La aplicación usa un usuario dedicado (`origami`) con permisos solo sobre
-`origami_db`, en lugar de conectarse como `root`.
-
----
-
-## Pruebas
-
-### Pruebas automatizadas
-
-Con la base de datos en ejecución:
-
-```bash
-cd server
-npm test
-```
-
-Cubren el ciclo completo del CRUD (crear, listar, consultar, actualizar,
-plegar, eliminar), la validación de datos, los códigos `404` y el manejador de
-rutas inexistentes.
-
-Última ejecución: 11/11 pruebas aprobadas. El CRUD también se verificó de extremo
-a extremo desde la interfaz (crear desde el formulario y ver la tarjeta nueva en
-la lista).
-
-### Integración continua
-
-El flujo [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en cada
-`push` y `pull_request`: levanta un MySQL 8.4, carga `database.sql`, corre las
-pruebas del backend y, en paralelo, revisa el lint y compila el frontend. El
-estado se ve en el badge de la portada.
-
-### Matriz de pruebas (evidencia QA)
-
-| ID | Módulo | Caso de prueba | Entrada / Acción | Resultado esperado | Estado |
-| --- | --- | --- | --- | --- | --- |
-| CP-01 | API / BD | Listar registros iniciales | `GET /api/hojas` | `200 OK` con arreglo JSON de las 3 hojas iniciales | Aprobado |
-| CP-02 | API / Validación | Crear hoja con campos vacíos | `POST /api/hojas` con `{"titulo": ""}` | `400 Bad Request`, bloquea la inserción | Aprobado |
-| CP-03 | API / CRUD | Crear hoja válida | `POST /api/hojas` con título, contenido, categoría y prioridad | `201 Created` y persistencia en MySQL | Aprobado |
-| CP-04 | API / CRUD | Plegar (completar) hoja | `PUT /api/hojas/1` con `"plegada": true` | `200 OK` y `plegada = 1` | Aprobado |
-| CP-05 | API / Errores | Eliminar ID inexistente | `DELETE /api/hojas/9999` | `404 Not Found` con mensaje controlado | Aprobado |
-| CP-06 | Frontend React | Filtro combinado en vivo | Seleccionar categoría + escribir en el buscador | Filtra tarjetas sin recargar la página | Aprobado |
-| CP-07 | API / CRUD | Consultar hoja por id | `GET /api/hojas/4` | `200 OK` con la hoja solicitada | Aprobado |
-| CP-08 | API / CRUD | Eliminar hoja existente | `DELETE /api/hojas/4` | `200 OK` y fila eliminada de la base | Aprobado |
-
----
-
-## Despliegue
-
-Origami puede publicarse como **un solo servicio**: Express sirve la interfaz
-compilada (`client/dist`) y la API desde el **mismo origen**, así que no hay que
-configurar CORS ni dos direcciones distintas.
-
-```bash
-cd client && npm run build     # genera client/dist
-cd ../server && npm start      # sirve interfaz + API en http://localhost:3001
-```
-
-Para dar una **URL pública** sin desplegar nada (útil para una demo), se compila
-y se abre un túnel con `cloudflared`. Para un despliegue **permanente** en la
-nube hay una guía paso a paso con Render + MySQL gratuito:
-
-**[`docs/despliegue.md`](docs/despliegue.md)** - las tres opciones, con los
-comandos exactos y una tabla de solución de problemas.
-
----
-
-## Decisiones de diseño
-
-- **Separación en capas**: `routes → controllers → config/db` en el backend y
-  `components` + `services` en el frontend, para que la lógica de acceso a datos
-  no se mezcle con la interfaz.
-- **ORM Prisma** en vez de SQL escrito a mano: las consultas se construyen con
-  el cliente tipado (`prisma.hoja.findMany`, `.create`, `.update`, `.delete`),
-  sin concatenar cadenas, lo que evita la inyección SQL.
-- **Figura de origami 3D sin librerías**: la grulla se arma con transformaciones
-  CSS 3D (`perspective`, `rotateX`/`rotateY` y `clip-path`), en lugar de cargar
-  Three.js.
-- **Validación en el servidor**, no solo en el formulario.
-- **Usuario de base de datos dedicado** (`origami`) en lugar de `root`.
-- **Credenciales fuera del repositorio**: `.env` está en `.gitignore` y solo se
-  versiona `.env.example`.
-- **URL de la API configurable**: el frontend lee `VITE_API_URL` desde
-  `client/.env` (plantilla en `client/.env.example`), así que cambiar el puerto o
-  el dominio del backend no obliga a tocar el código.
-
----
 
 ## Autor
 
-Proyecto desarrollado como entrega final para el **SENA, Técnica en Desarrollo de Software**.
-
-Distribuido bajo licencia **MIT** (ver `LICENSE`).
+Entrega final para el **SENA, Técnica en Desarrollo de Software**.

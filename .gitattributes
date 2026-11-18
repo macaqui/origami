@@ -1,3 +1,0 @@
-# Los scripts de Windows deben viajar con saltos de linea CRLF: cmd.exe puede
-# fallar si el archivo usa saltos LF.
-*.bat text eol=crlf
