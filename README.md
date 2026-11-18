@@ -64,7 +64,8 @@ origami/
 ├── docker-compose.yml          # MySQL listo para usar (opcional)
 ├── docs/
 │   ├── captura-app.jpeg        # Captura de la interfaz
-│   └── documentacion.md # Guía para defender el proyecto
+│   ├── documentacion.md # Guía para defender el proyecto
+│   └── despliegue.md           # Cómo publicarlo online (3 opciones)
 ├── .github/workflows/ci.yml    # Integración continua (pruebas + build automáticos)
 ├── LICENSE
 ├── .gitignore
@@ -226,6 +227,26 @@ estado se ve en el badge de la portada.
 | CP-06 | Frontend React | Filtro combinado en vivo | Seleccionar categoría + escribir en el buscador | Filtra tarjetas sin recargar la página | Aprobado |
 | CP-07 | API / CRUD | Consultar hoja por id | `GET /api/hojas/4` | `200 OK` con la hoja solicitada | Aprobado |
 | CP-08 | API / CRUD | Eliminar hoja existente | `DELETE /api/hojas/4` | `200 OK` y fila eliminada de la base | Aprobado |
+
+---
+
+## Despliegue
+
+Origami puede publicarse como **un solo servicio**: Express sirve la interfaz
+compilada (`client/dist`) y la API desde el **mismo origen**, así que no hay que
+configurar CORS ni dos direcciones distintas.
+
+```bash
+cd client && npm run build     # genera client/dist
+cd ../server && npm start      # sirve interfaz + API en http://localhost:3001
+```
+
+Para dar una **URL pública** sin desplegar nada (útil para una demo), se compila
+y se abre un túnel con `cloudflared`. Para un despliegue **permanente** en la
+nube hay una guía paso a paso con Render + MySQL gratuito:
+
+📄 **[`docs/despliegue.md`](docs/despliegue.md)** — las tres opciones, con los
+comandos exactos y una tabla de solución de problemas.
 
 ---
 

@@ -1,9 +1,14 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import hojasRoutes from './routes/hojasRoutes.js';
 
 const app = express();
+
+const carpetaActual = path.dirname(fileURLToPath(import.meta.url));
 
 // Orígenes permitidos para CORS (separados por coma).
 // Si la variable está vacía se permite cualquier origen (solo desarrollo).
@@ -22,6 +27,17 @@ app.get('/api/health', (req, res) => {
 
 // Rutas principales
 app.use('/api/hojas', hojasRoutes);
+
+// Sirve la interfaz compilada (client/dist) cuando existe.
+// Con esto la interfaz y la API pueden vivir en el MISMO servicio y el mismo
+// origen: se abre una sola URL y no hay que configurar CORS.
+// En desarrollo (Vite en el puerto 5173) esta carpeta no existe y no pasa nada.
+const carpetaCliente = path.resolve(carpetaActual, '../../client/dist');
+const hayInterfazCompilada = fs.existsSync(path.join(carpetaCliente, 'index.html'));
+
+if (hayInterfazCompilada) {
+  app.use(express.static(carpetaCliente));
+}
 
 // Ruta no encontrada (404)
 app.use((req, res) => {
