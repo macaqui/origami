@@ -1,13 +1,13 @@
-# Despliegue y demo — guía de despliegue
+# Despliegue y demo
 
 Tres formas de mostrar Origami, de la más segura a la más "profesional". Usa la
 **A** como plan principal y la **B** como as bajo la manga.
 
 | Plan | ¿Necesitas cuentas? | ¿Necesitas internet? | Duración | Para qué sirve |
 | --- | --- | --- | --- | --- |
-| **A. Demo local** | No | No | Siempre | Presentar desde tu PC (lo más seguro) |
-| **A2. Windows** | No | Solo la primera vez | Siempre | Presentar desde un PC con Windows (ver abajo) |
-| **B. Túnel público** | No | Sí | Mientras la terminal esté abierta | Dar una URL que el usuario abre en su celular |
+| **A. Demo local** | No | No | Siempre | Ejecutar en tu PC (lo más seguro) |
+| **A2. Windows** | No | Solo la primera vez | Siempre | Ejecutar en otro PC con Windows (ver abajo) |
+| **B. Túnel público** | No | Sí | Mientras la terminal esté abierta | Dar una URL que cualquiera abre en su celular |
 | **C. Nube permanente** | Sí (2) | Sí | Permanente | Que la página viva sin tu PC |
 
 > **Idea clave:** el backend de Origami ya puede **servir la interfaz compilada**
@@ -34,7 +34,7 @@ npm install
 npm run dev                       # http://localhost:5173
 ```
 
-**En la entrega:** abre `http://localhost:5173`, crea una hoja, edítala,
+**Para probarlo:** abre `http://localhost:5173`, crea una hoja, edítala,
 pliégala, usa el buscador y el filtro, elimínala. Luego, en una tercera terminal:
 
 ```bash
@@ -45,7 +45,7 @@ mariadb -u origami -porigami123 origami_db -e "SELECT id, titulo, plegada FROM h
 
 ---
 
-## Plan A2 — Windows (si presentas en un PC con Windows)
+## Plan A2 — Windows (en otro PC con Windows)
 
 Windows no trae el comando `cp` y las rutas van con `\`. Para no pelear con eso,
 el repositorio incluye dos scripts que se ejecutan con doble clic:
@@ -75,10 +75,10 @@ npm start
 ```
 
 > **Comprueba antes en ese PC:** `node -v` y `mysql --version`. Si alguno falla,
-> no pierdas tiempo ahí: presenta desde tu portátil o usa el Plan B.
+> no pierdas tiempo ahí: usa tu portátil o el Plan B.
 >
 > **Ojo:** los scripts necesitan internet la primera vez, porque `npm ci`
-> descarga las dependencias. Si un PC con Windows no tiene internet, lleva la carpeta
+> descarga las dependencias. Si ese PC no tiene internet, lleva la carpeta
 > `node_modules` ya instalada desde tu PC.
 
 **Si aparece `Access denied for user 'origami'`:** abre `server\.env` y cambia
@@ -135,13 +135,13 @@ gh repo edit macaqui/origami --homepage "https://la-url-que-te-dio.trycloudflare
 
 - La URL es **aleatoria** y **vive solo mientras** la terminal del túnel esté
   abierta y tu PC encendido y con internet. Si cierras la terminal, muere.
-- Antes de presentar, **ábrela tú mismo** y prueba crear una hoja: si funciona
-  para ti, funciona para el usuario.
+- Antes de usarla, **ábrela tú mismo** y prueba crear una hoja: si funciona
+  para ti, funciona para cualquiera.
 - Si el Wi-Fi de la institución bloquea el túnel, el Plan A sigue funcionando.
 
 ---
 
-## Plan C — Nube permanente (opcional, para después de la entrega)
+## Plan C — Nube permanente (opcional)
 
 Aquí la página ya no depende de tu PC. Necesita dos cuentas gratuitas:
 

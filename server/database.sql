@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS hojas (
 INSERT INTO hojas (titulo, contenido, categoria, prioridad, plegada) VALUES
 ('Configurar API en Express', 'Crear rutas GET, POST, PUT y DELETE conectadas a MySQL.', 'Desarrollo', 'Alta', 1),
 ('Revisar script SQL', 'Verificar tipos de datos ENUM y llave primaria autoincremental.', 'Base de Datos', 'Media', 0),
-('Documentar el proyecto', 'Explicar flujo entre React, Express y matriz de pruebas.', 'Estudio', 'Alta', 0);
+('Documentar el proyecto', 'Escribir el README y las instrucciones de uso.', 'Estudio', 'Alta', 0);
 
 -- Usuario de la aplicación (evita que el backend se conecte como root).
 -- Cambia la contraseña antes de desplegar en un entorno real.
