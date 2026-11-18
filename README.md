@@ -1,5 +1,7 @@
 # Origami — Gestor de Notas y Tareas Plegables
 
+[![CI](https://github.com/macaqui/origami/actions/workflows/ci.yml/badge.svg)](https://github.com/macaqui/origami/actions/workflows/ci.yml)
+
 Proyecto final de la **Técnica en Desarrollo de Software (SENA)**. Aplicación web
 Full-Stack para crear, organizar, editar, filtrar y *plegar* (completar) notas
 técnicas por categoría y prioridad.
@@ -10,6 +12,10 @@ técnicas por categoría y prioridad.
 > buscador en vivo y filtros por categoría.
 
 ![Captura de la aplicación](docs/captura-app.jpeg)
+
+📖 **Documentación:** [`docs/documentacion.md`](docs/documentacion.md)
+— explica qué hace cada archivo, el recorrido de una petición y un banco de
+preguntas con respuestas para defender el proyecto.
 
 ---
 
@@ -56,6 +62,10 @@ origami/
 │   ├── .env.example
 │   └── package.json
 ├── docker-compose.yml          # MySQL listo para usar (opcional)
+├── docs/
+│   ├── captura-app.jpeg        # Captura de la interfaz
+│   └── documentacion.md # Guía para defender el proyecto
+├── .github/workflows/ci.yml    # Integración continua (pruebas + build automáticos)
 ├── LICENSE
 ├── .gitignore
 └── README.md
@@ -177,6 +187,13 @@ rutas inexistentes.
 > **Última ejecución:** 11/11 pruebas aprobadas, contra MariaDB 13.0.2.
 > El CRUD también se verificó de extremo a extremo desde la interfaz
 > (crear desde el formulario y ver la tarjeta nueva en la lista).
+
+### Integración continua
+
+El flujo [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en cada
+`push` y `pull_request`: levanta un MySQL 8.4, carga `database.sql`, corre las
+pruebas del backend y, en paralelo, revisa el lint y compila el frontend. El
+estado se ve en el badge de la portada.
 
 ### Matriz de pruebas (evidencia QA)
 
