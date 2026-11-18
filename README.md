@@ -13,10 +13,6 @@ técnicas por categoría y prioridad.
 
 ![Captura de la aplicación](docs/captura-app.jpeg)
 
-📖 **Documentación:** [`docs/documentacion.md`](docs/documentacion.md)
-— explica qué hace cada archivo, el recorrido de una petición y un banco de
-preguntas con respuestas para defender el proyecto.
-
 ---
 
 ## Tecnologías utilizadas
@@ -64,7 +60,6 @@ origami/
 ├── docker-compose.yml          # MySQL listo para usar (opcional)
 ├── docs/
 │   ├── captura-app.jpeg        # Captura de la interfaz
-│   ├── documentacion.md # Guía para defender el proyecto
 │   └── despliegue.md           # Cómo publicarlo online (3 opciones)
 ├── .github/workflows/ci.yml    # Integración continua (pruebas + build automáticos)
 ├── iniciar-windows.bat         # Arranque automático en Windows
