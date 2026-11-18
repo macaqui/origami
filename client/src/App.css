@@ -295,89 +295,10 @@ button:hover {
   border: 1px dashed var(--border);
 }
 
-/* ============ Origami 3D (tarjeta con volteo, como la cívica) ============ */
-.origami-escena {
-  perspective: 1200px;
-  width: 100%;
-  display: grid;
-  place-items: center;
-}
-
-.origami-tarjeta {
-  position: relative;
-  width: min(100%, 340px);
-  aspect-ratio: 1 / 1;
-  transform-style: preserve-3d;
-  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.2, 1);
-  cursor: pointer;
-}
-
-.origami-tarjeta.volteada {
-  transform: rotateY(180deg);
-}
-
-.origami-cara {
-  position: absolute;
-  inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  padding: 1.25rem;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-}
-
-.origami-frontal {
-  background: radial-gradient(circle at 50% 25%, #24334a 0%, #0f172a 75%);
-}
-
-.origami-trasera {
-  transform: rotateY(180deg);
-  background: var(--surface);
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-  gap: 0.5rem;
-}
-
-.origami-svg {
-  width: 100%;
-  max-width: 230px;
-  height: auto;
-  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
-  animation: origami-flotar 4.5s ease-in-out infinite;
-}
-
-@keyframes origami-flotar {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-1deg);
-  }
-  50% {
-    transform: translateY(-9px) rotate(1deg);
-  }
-}
-
-.origami-pista {
-  font-size: 0.75rem;
-  color: var(--muted);
-  letter-spacing: 0.3px;
-}
-
+/* ============ Datos de la hoja en la vista 3D ============ */
 .origami-badges {
   display: flex;
   gap: 0.5rem;
-}
-
-.origami-trasera h3 {
-  font-size: 1.1rem;
-  color: var(--text);
 }
 
 .origami-detalle {
@@ -467,4 +388,192 @@ button:hover {
 
 .hoja-botones {
   flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   MUNDO DE PAPEL — toda la página vista en 3D
+   ========================================================================== */
+
+/* La escena: la página se mira desde un poco arriba. */
+.contenedor-app {
+  min-height: 100vh;
+  perspective: 1500px;
+  perspective-origin: 50% 6%;
+  overflow-x: hidden;
+}
+
+/* Todo el contenido se inclina siguiendo al ratón (variables --px y --py). */
+.mundo-3d {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--py, 0) * 3deg)) rotateY(calc(var(--px, 0) * -3.5deg));
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+
+/* Grulla gigante girando detrás del contenido, con paralaje propio. */
+.fondo-origami {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.32;
+  transform: translate3d(calc(var(--px, 0) * -32px), calc(var(--py, 0) * -24px), 0);
+  transition: transform 0.25s ease-out;
+}
+
+.fondo-origami .grulla-escena {
+  width: 640px;
+  height: 600px;
+}
+
+/* ---------- La grulla de origami en 3D (tres capas de profundidad) ---------- */
+
+.grulla-escena {
+  position: relative;
+  width: 300px;
+  height: 280px;
+  margin: 0 auto;
+  perspective: 1000px;
+  perspective-origin: 50% 42%;
+}
+
+.grulla-giro {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: grulla-gira 13s ease-in-out infinite;
+}
+
+@keyframes grulla-gira {
+  0%,
+  100% {
+    transform: rotateX(-12deg) rotateY(-36deg);
+  }
+  50% {
+    transform: rotateX(-6deg) rotateY(36deg);
+  }
+}
+
+.grulla-capa {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 12px 16px rgba(2, 6, 23, 0.28));
+}
+
+.grulla-capa-atras {
+  transform: translateZ(-56px);
+}
+
+.grulla-capa-cuerpo {
+  transform: translateZ(0);
+}
+
+.grulla-capa-frente {
+  transform: translateZ(56px);
+}
+
+.grulla-sombra {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 160px;
+  height: 26px;
+  margin-left: -80px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(2, 6, 23, 0.42), rgba(2, 6, 23, 0) 72%);
+  animation: grulla-sombra 13s ease-in-out infinite;
+}
+
+@keyframes grulla-sombra {
+  0%,
+  100% {
+    transform: scaleX(0.78);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleX(1.1);
+    opacity: 0.85;
+  }
+}
+
+/* ---------- Las tarjetas son hojas de papel que se levantan ---------- */
+
+.hoja-card {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease;
+}
+
+.hoja-card:hover {
+  transform: rotateX(7deg) rotateY(-9deg) translateZ(28px);
+  box-shadow: 0 30px 55px rgba(2, 6, 23, 0.6);
+}
+
+/* ---------- Los paneles flotan como cartulinas ---------- */
+
+.topbar,
+.layout-principal > aside,
+.panel-hojas {
+  box-shadow: 0 22px 45px rgba(2, 6, 23, 0.45);
+}
+
+/* ---------- La vista 3D del modal ---------- */
+
+.modal-contenido {
+  width: min(92vw, 760px);
+}
+
+.vista-3d {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.vista-3d-datos {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.vista-3d-datos h3 {
+  margin: 4px 0 0;
+  font-size: 1.3rem;
+}
+
+@media (min-width: 720px) {
+  .vista-3d {
+    flex-direction: row;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .vista-3d-datos {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ---------- Accesibilidad: sin animaciones si el sistema lo pide ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .grulla-giro,
+  .grulla-sombra {
+    animation: none;
+  }
+
+  .mundo-3d,
+  .fondo-origami {
+    transition: none;
+  }
 }
