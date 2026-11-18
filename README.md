@@ -13,38 +13,33 @@ botón "Ver 3D" que muestra una grulla de origami hecha con CSS.
 
 - **Frontend:** React 19 + Vite 8 (CSS normal, sin librerías de 3D)
 - **Backend:** Node.js + Express
-- **Base de datos:** MySQL / MariaDB con el ORM **Prisma**
+- **Base de datos:** SQLite (un archivo local) con el ORM **Prisma**
 - **Otros:** dotenv y cors
 
 ## Qué necesitas
 
 - Node.js 20 o superior
-- MySQL 8 o MariaDB
+
+No hace falta instalar ninguna base de datos: SQLite guarda todo en un archivo
+dentro del proyecto (`server/prisma/dev.db`).
 
 ## Cómo ejecutarlo
 
-### 1. Crear la base de datos (solo la primera vez)
-
-```bash
-mysql -u root -p < server/database.sql
-```
-
-Eso crea la base `origami_db`, la tabla `hojas`, 3 notas de ejemplo y el usuario
-`origami` que usa la aplicación.
-
-### 2. Arrancar el backend
+### 1. Arrancar el backend
 
 ```bash
 cd server
 cp .env.example .env
 npm install
-npx prisma generate
+npx prisma db push
 npm run dev
 ```
 
-Queda escuchando en `http://localhost:3001`.
+Queda escuchando en `http://localhost:3001`. El comando `npx prisma db push`
+crea el archivo `server/prisma/dev.db` con la tabla `hojas`. Al arrancar, si la
+tabla está vacía, el servidor inserta 3 notas de ejemplo.
 
-### 3. Arrancar el frontend
+### 2. Arrancar el frontend
 
 En otra terminal:
 
@@ -59,11 +54,10 @@ Abre `http://localhost:5173`.
 
 ### En Windows
 
-Hay dos archivos `.bat` para hacerlo con doble clic:
+Hay un archivo `.bat` para hacerlo con doble clic:
 
-- `preparar-base-de-datos.bat`: la primera vez, para crear la base.
-- `iniciar-windows.bat`: cada vez, instala, compila y arranca todo en
-  `http://localhost:3001`.
+- `iniciar-windows.bat`: instala, prepara la base de datos, compila y arranca
+  todo en `http://localhost:3001`.
 
 ## La API
 
@@ -92,13 +86,13 @@ curl -X POST http://localhost:3001/api/hojas \
 
 | Campo | Tipo |
 | --- | --- |
-| `id` | INT AUTO_INCREMENT (llave primaria) |
-| `titulo` | VARCHAR(120) |
+| `id` | INTEGER AUTOINCREMENT (llave primaria) |
+| `titulo` | TEXT |
 | `contenido` | TEXT |
-| `categoria` | VARCHAR(50) (Desarrollo, Base de Datos, Estudio, Personal) |
-| `prioridad` | VARCHAR(20) (Baja, Media, Alta) |
+| `categoria` | TEXT (Desarrollo, Base de Datos, Estudio, Personal) |
+| `prioridad` | TEXT (Baja, Media, Alta) |
 | `plegada` | BOOLEAN (0 activa / 1 plegada) |
-| `fecha_creacion` | TIMESTAMP |
+| `fecha_creacion` | DATETIME |
 
 ## Estructura
 
@@ -107,7 +101,6 @@ origami/
 ├── client/    # interfaz (React + Vite)
 ├── server/    # API (Express + Prisma)
 ├── iniciar-windows.bat
-├── preparar-base-de-datos.bat
 └── README.md
 ```
 

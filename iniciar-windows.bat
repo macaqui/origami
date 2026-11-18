@@ -13,12 +13,13 @@ if errorlevel 1 echo.
 if errorlevel 1 pause
 if errorlevel 1 exit /b 1
 
-echo [1/4] Dependencias del backend...
+echo [1/4] Dependencias del backend y base de datos...
 cd server
 if exist "node_modules" echo   (ya estaban instaladas, se omiten)
 if not exist "node_modules" call npm ci
 if not exist "node_modules" call npm install
 if not exist ".env" copy ".env.example" ".env" >nul
+call npx prisma db push
 echo.
 
 echo [2/4] Dependencias del frontend...
@@ -44,9 +45,6 @@ echo   ---------------------------------------------------------
 echo    Abre en el navegador:  http://localhost:3001
 echo    Deja esta ventana abierta.  Para detener:  Ctrl + C
 echo   ---------------------------------------------------------
-echo.
-echo   Si la pagina dice que no se pudieron cargar las hojas,
-echo   ejecuta primero:  preparar-base-de-datos.bat
 echo.
 node src\index.js
 echo.

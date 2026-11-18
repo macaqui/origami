@@ -1,10 +1,8 @@
 // Esquema de Prisma para Origami.
 //
-//   - El cliente de Prisma se genera con:   npx prisma generate
-//   - La base de datos (tabla y datos de ejemplo) la crea server/database.sql
-//
-// Prisma solo se encarga del acceso a datos (ORM); el esquema de la base sigue
-// en database.sql para que se pueda crear con un solo comando.
+//   - La base de datos es un archivo SQLite: server/prisma/dev.db
+//   - La tabla se crea con:   npx prisma db push
+//   - Las 3 hojas de ejemplo las inserta el servidor al arrancar si la tabla esta vacia.
 
 generator client {
   provider = "prisma-client-js"
@@ -15,16 +13,15 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 /// Una hoja de papel: cada nota o tarea del gestor Origami.
-/// La tabla real se llama "hojas" y ya existe (la crea database.sql).
 model Hoja {
   id             Int      @id @default(autoincrement())
   titulo         String
-  contenido      String   @db.Text
+  contenido      String
   categoria      String?  @default("Desarrollo")
   prioridad      String?  @default("Media")
   plegada        Boolean  @default(false)

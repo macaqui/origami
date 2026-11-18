@@ -19,3 +19,7 @@ npm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Base de datos SQLite
+server/prisma/*.db
+server/prisma/*.db-journal
