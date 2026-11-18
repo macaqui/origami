@@ -1,14 +1,9 @@
 import { useEffect, useRef } from 'react';
 
 // Grulla de origami que se pliega y se despliega con CSS 3D (sin librerías).
-//
-// Cada parte de la figura (cuerpo, alas, cuello, cola) es un <div> que gira
-// sobre su borde como una bisagra, y las caras de papel son triángulos
-// recortados con clip-path. Al mover el ángulo de cada bisagra, la hoja plana
-// se convierte en grulla.
-//
-//   modo="respiro"     -> se pliega y se despliega sola (portada)
-//   modo="interactivo" -> se pliega y se despliega al hacer clic (modal "Ver 3D")
+// Cada parte de la figura es un div que gira sobre su borde como una bisagra, y
+// las caras de papel son triángulos recortados con clip-path.
+// modo="respiro" se usa en la portada; modo="interactivo" en el modal.
 
 const U = 120; // unidad base, en píxeles
 const PAPEL_1 = '#efe2c9';

@@ -6,11 +6,11 @@ Proyecto final de la **Técnica en Desarrollo de Software (SENA)**. Aplicación 
 Full-Stack para crear, organizar, editar, filtrar y *plegar* (completar) notas
 técnicas por categoría y prioridad.
 
-> **¿Por qué "Origami"?** Cada nota es una *hoja*. Cuando la terminas, la **pliegas**:
-> la tarjeta queda atenuada y tachada, pero nunca se pierde: puedes **desplegarla**
-> otra vez en cualquier momento. El gestor cuenta con un formulario lateral, un
-> buscador en vivo, filtros por categoría y una **vista 3D** donde cada hoja se
-> convierte en una grulla de papel que se pliega y se despliega al hacer clic.
+La idea del nombre: cada nota es una *hoja*. Cuando la terminas, la pliegas y la
+tarjeta queda atenuada y tachada, pero nunca se pierde, porque puedes desplegarla
+otra vez cuando quieras. El gestor tiene un formulario lateral, un buscador en
+vivo, filtros por categoría y una vista 3D donde cada hoja se convierte en una
+grulla de papel que se pliega y se despliega al hacer clic.
 
 ![Captura de la aplicación](docs/captura-app.jpeg)
 
@@ -182,8 +182,8 @@ curl -X PUT http://localhost:3001/api/hojas/1 \
   -d '{"titulo":"Configurar API en Express","contenido":"Crear rutas GET, POST, PUT y DELETE conectadas a MySQL.","categoria":"Desarrollo","prioridad":"Alta","plegada":true}'
 ```
 
-> Si en el `PUT` se omite el campo `plegada`, la hoja **conserva** su estado
-> actual, de modo que editar el texto nunca despliega una hoja por accidente.
+Si en el `PUT` se omite el campo `plegada`, la hoja conserva su estado actual, de
+modo que editar el texto nunca despliega una hoja por accidente.
 
 ---
 
@@ -236,9 +236,9 @@ Cubren el ciclo completo del CRUD (crear, listar, consultar, actualizar,
 plegar, eliminar), la validación de datos, los códigos `404` y el manejador de
 rutas inexistentes.
 
-> **Última ejecución:** 11/11 pruebas aprobadas.
-> El CRUD también se verificó de extremo a extremo desde la interfaz
-> (crear desde el formulario y ver la tarjeta nueva en la lista).
+Última ejecución: 11/11 pruebas aprobadas. El CRUD también se verificó de extremo
+a extremo desde la interfaz (crear desde el formulario y ver la tarjeta nueva en
+la lista).
 
 ### Integración continua
 

@@ -10,10 +10,9 @@ una URL pública sin desplegar nada.
 | **B. Túnel público** | No | Sí | Mientras la terminal esté abierta | Dar una URL que cualquiera abre en su celular |
 | **C. Nube permanente** | Sí (2) | Sí | Permanente | Que la página viva sin tu PC |
 
-> **Idea clave:** el backend de Origami ya puede **servir la interfaz compilada**
-> (`client/dist`). Por eso, con un solo comando, la interfaz y la API quedan en la
-> **misma URL y el mismo origen**, y así no hay que pelear con CORS ni con dos
-> direcciones distintas.
+El backend de Origami ya puede servir la interfaz compilada (`client/dist`). Por
+eso, con un solo comando, la interfaz y la API quedan en la misma URL y el mismo
+origen, y así no hay que pelear con CORS ni con dos direcciones distintas.
 
 ---
 
@@ -75,12 +74,12 @@ cd ..\server
 npm start
 ```
 
-> **Comprueba antes en ese PC:** `node -v` y `mysql --version`. Si alguno falla,
-> no pierdas tiempo ahí: usa tu portátil o el Plan B.
->
-> **Ojo:** los scripts necesitan internet la primera vez, porque `npm ci`
-> descarga las dependencias. Si ese PC no tiene internet, lleva la carpeta
-> `node_modules` ya instalada desde tu PC.
+Antes de empezar en ese PC, comprueba `node -v` y `mysql --version`. Si alguno
+falla, no pierdas tiempo ahí: usa tu portátil o el Plan B.
+
+Los scripts necesitan internet la primera vez, porque `npm ci` descarga las
+dependencias. Si ese PC no tiene internet, lleva la carpeta `node_modules` ya
+instalada desde tu PC.
 
 **Si aparece `Access denied for user 'origami'`:** abre `server\.env` y, dentro
 de `DATABASE_URL`, cambia `localhost` por `127.0.0.1` (el script `database.sql`
@@ -132,7 +131,7 @@ Si quieres, registra esa URL como sitio web del repositorio:
 gh repo edit macaqui/origami --homepage "https://la-url-que-te-dio.trycloudflare.com"
 ```
 
-**Advertencias honestas:**
+A tener en cuenta:
 
 - La URL es **aleatoria** y **vive solo mientras** la terminal del túnel esté
   abierta y tu PC encendido y con internet. Si cierras la terminal, muere.
@@ -198,9 +197,9 @@ Entra al **phpMyAdmin** que da el proveedor, selecciona tu base y usa
 gh repo edit macaqui/origami --homepage "https://origami-xxxx.onrender.com"
 ```
 
-> **Contra del plan gratuito:** el servicio se "duerme" a los ~15 minutos sin
-> uso, y la primera visita después de dormir tarda ~1 minuto en despertar.
-> Si vas a mostrarlo, **ábrelo tú 2 minutos antes** para despertarlo.
+El plan gratuito se "duerme" a los ~15 minutos sin uso, y la primera visita
+después de dormir tarda ~1 minuto en despertar. Si vas a mostrarlo, ábrelo tú 2
+minutos antes para despertarlo.
 
 ---
 

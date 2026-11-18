@@ -1,6 +1,4 @@
-/* ==========================================================================
-   Origami - interfaz de papel
-   ========================================================================== */
+/* Origami - interfaz de papel */
 
 :root {
   --fondo: #f4efe4;
@@ -51,7 +49,7 @@ button {
   padding: 2.5rem 1.25rem 4rem;
 }
 
-/* ------------------------------- Portada -------------------------------- */
+/* Portada */
 
 .hero {
   display: grid;
@@ -126,7 +124,7 @@ button {
   height: clamp(230px, 32vw, 340px);
 }
 
-/* --------------------------- Mensaje de error --------------------------- */
+/* Mensaje de error */
 
 .banner-error {
   background: #fbe9e4;
@@ -138,7 +136,7 @@ button {
   margin-bottom: 1.5rem;
 }
 
-/* ------------------------------- Tablero -------------------------------- */
+/* Tablero */
 
 .layout-principal {
   display: grid;
@@ -157,7 +155,7 @@ button {
   }
 }
 
-/* ---------------------------- Formulario -------------------------------- */
+/* Formulario */
 
 .origami-form {
   position: relative;
@@ -272,7 +270,7 @@ button {
   background: var(--papel-3);
 }
 
-/* --------------------------- Panel de hojas ----------------------------- */
+/* Panel de hojas */
 
 .panel-hojas {
   display: flex;
@@ -315,7 +313,7 @@ button {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
-/* ------------------------------ Tarjetas -------------------------------- */
+/* Tarjetas */
 
 .hoja-card {
   position: relative;
@@ -490,7 +488,7 @@ button {
   border-radius: 10px;
 }
 
-/* -------------------------- Modal "Ver 3D" ------------------------------ */
+/* Modal "Ver 3D" */
 
 .modal-fondo {
   position: fixed;
@@ -646,9 +644,7 @@ button {
   }
 }
 
-/* ==========================================================================
-   La grulla de origami (bisagras en 3D)
-   ========================================================================== */
+/* La grulla de origami (bisagras en 3D) */
 
 .grulla-escena {
   position: relative;
@@ -716,7 +712,7 @@ button {
   opacity: var(--sh, 0);
 }
 
-/* --------------------------- Accesibilidad ------------------------------ */
+/* Accesibilidad */
 
 @media (prefers-reduced-motion: reduce) {
   .modal-fondo {
