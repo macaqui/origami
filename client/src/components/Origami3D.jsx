@@ -1,7 +1,7 @@
 import GrullaPlegable from './GrullaPlegable';
 
-// Contenido del modal "Ver 3D": a la izquierda la grulla de origami (que se
-// pliega y despliega al hacer clic) y a la derecha los datos de la hoja.
+// Contenido del modal "Ver 3D": a la izquierda la grulla (que se pliega y
+// despliega al hacer clic) y a la derecha los datos de la hoja.
 function Origami3D({ hoja }) {
   const plegada = Boolean(hoja?.plegada);
   const prioridad = hoja?.prioridad || 'Media';

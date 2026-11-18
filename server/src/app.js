@@ -28,10 +28,9 @@ app.get('/api/health', (req, res) => {
 // Rutas principales
 app.use('/api/hojas', hojasRoutes);
 
-// Sirve la interfaz compilada (client/dist) cuando existe.
-// Con esto la interfaz y la API pueden vivir en el MISMO servicio y el mismo
-// origen: se abre una sola URL y no hay que configurar CORS.
-// En desarrollo (Vite en el puerto 5173) esta carpeta no existe y no pasa nada.
+// Sirve la interfaz compilada (client/dist) cuando existe, para poder abrir la
+// interfaz y la API en el mismo puerto y el mismo origen.
+// En desarrollo (Vite en el puerto 5173) esa carpeta no existe y no pasa nada.
 const carpetaCliente = path.resolve(carpetaActual, '../../client/dist');
 const hayInterfazCompilada = fs.existsSync(path.join(carpetaCliente, 'index.html'));
 

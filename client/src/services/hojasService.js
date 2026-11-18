@@ -1,8 +1,7 @@
-// La URL del backend se configura con la variable VITE_API_URL del archivo .env
-// (ver client/.env.example). Si no está definida:
-//   - en desarrollo se usa localhost:3001 (el backend corre aparte, con Vite en el 5173);
-//   - en un build de producción se usa la ruta relativa /api/hojas, porque en ese
-//     caso el propio Express sirve la interfaz y comparten el mismo origen.
+// URL del backend. Se puede cambiar con la variable VITE_API_URL del archivo
+// .env (ver client/.env.example). Si no está definida: en desarrollo se usa
+// localhost:3001 y en producción la ruta relativa /api/hojas, porque ahí
+// Express sirve la interfaz y comparte el mismo origen.
 const API_URL =
   import.meta.env.VITE_API_URL ||
   (import.meta.env.PROD ? '/api/hojas' : 'http://localhost:3001/api/hojas');
@@ -13,7 +12,7 @@ export const listarHojas = async () => {
   return respuesta.json();
 };
 
-// 5.º fetch: obtiene UNA hoja por su id (GET /api/hojas/:id).
+// Obtiene una sola hoja por su id.
 export const obtenerHoja = async (id) => {
   const respuesta = await fetch(`${API_URL}/${id}`);
   const data = await respuesta.json();

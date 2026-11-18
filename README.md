@@ -1,4 +1,4 @@
-# Origami — Gestor de Notas y Tareas Plegables
+# Origami - Gestor de Notas y Tareas Plegables
 
 [![CI](https://github.com/macaqui/origami/actions/workflows/ci.yml/badge.svg)](https://github.com/macaqui/origami/actions/workflows/ci.yml)
 
@@ -7,10 +7,10 @@ Full-Stack para crear, organizar, editar, filtrar y *plegar* (completar) notas
 técnicas por categoría y prioridad.
 
 > **¿Por qué "Origami"?** Cada nota es una *hoja*. Cuando la terminas, la **pliegas**:
-> la tarjeta queda atenuada y tachada, pero nunca se pierde — puedes **desplegarla**
+> la tarjeta queda atenuada y tachada, pero nunca se pierde: puedes **desplegarla**
 > otra vez en cualquier momento. El gestor cuenta con un formulario lateral, un
 > buscador en vivo, filtros por categoría y una **vista 3D** donde cada hoja se
-> convierte en una grulla de papel que gira al hacer clic.
+> convierte en una grulla de papel que se pliega y se despliega al hacer clic.
 
 ![Captura de la aplicación](docs/captura-app.jpeg)
 
@@ -20,7 +20,7 @@ técnicas por categoría y prioridad.
 
 | Capa | Tecnología |
 | --- | --- |
-| Frontend | React 19 + Vite 8 + CSS3 (tema oscuro y figura 3D en CSS) |
+| Frontend | React 19 + Vite 8 + CSS3 (tema claro tipo papel y figura 3D en CSS) |
 | Backend | Node.js + Express 4 (API REST) |
 | Base de datos | MySQL 8 / MariaDB con el ORM **Prisma 6** |
 | Pruebas | Vitest + Supertest |
@@ -36,9 +36,10 @@ origami/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── GrullaPlegable.jsx  # Grulla de origami en 3D (bisagras CSS)
 │   │   │   ├── HojaCard.jsx    # Tarjeta de una hoja (ver 3D / plegar / editar / eliminar)
 │   │   │   ├── HojaForm.jsx    # Formulario de creación y edición
-│   │   │   └── Origami3D.jsx   # Figura de origami con volteo 3D en CSS
+│   │   │   └── Origami3D.jsx   # Contenido del modal "Ver 3D"
 │   │   ├── services/
 │   │   │   └── hojasService.js # Capa de acceso a la API REST
 │   │   ├── App.css
@@ -84,7 +85,7 @@ origami/
 
 ## Instalación y ejecución
 
-### Opción A — Con Docker (la más rápida)
+### Opción A - Con Docker (la más rápida)
 
 ```bash
 docker compose up -d          # levanta MySQL y carga database.sql automáticamente
@@ -92,7 +93,7 @@ cd server && cp .env.example .env && npm install && npx prisma generate && npm r
 cd ../client && cp .env.example .env && npm install && npm run dev
 ```
 
-### Opción B — MySQL/MariaDB local
+### Opción B - MySQL/MariaDB local
 
 **1. Base de datos.** Importa el script (crea la base `origami_db`, la tabla
 `hojas`, 3 registros de ejemplo y el usuario de aplicación `origami`):
@@ -120,7 +121,7 @@ npm install
 npm run dev               # http://localhost:5173
 ```
 
-### Opción C — Windows (arranque automático)
+### Opción C - Windows (arranque automático)
 
 Windows no tiene el comando `cp` y las rutas usan `\`, así que el proyecto
 incluye dos scripts que se ejecutan con doble clic:
@@ -165,7 +166,7 @@ Son **5 operaciones CRUD** sobre la entidad `Hoja`, y el frontend las consume
 con **5 `fetch`** (uno por operación) desde `client/src/services/hojasService.js`:
 `listarHojas`, `obtenerHoja`, `crearHoja`, `actualizarHoja` y `eliminarHoja`.
 
-**Ejemplo — crear una hoja:**
+**Ejemplo - crear una hoja:**
 
 ```bash
 curl -X POST http://localhost:3001/api/hojas \
@@ -173,7 +174,7 @@ curl -X POST http://localhost:3001/api/hojas \
   -d '{"titulo":"Repasar consultas JOIN","contenido":"Practicar INNER y LEFT JOIN.","categoria":"Base de Datos","prioridad":"Alta"}'
 ```
 
-**Ejemplo — plegar la hoja con id 1:**
+**Ejemplo - plegar la hoja con id 1:**
 
 ```bash
 curl -X PUT http://localhost:3001/api/hojas/1 \
@@ -182,8 +183,7 @@ curl -X PUT http://localhost:3001/api/hojas/1 \
 ```
 
 > Si en el `PUT` se omite el campo `plegada`, la hoja **conserva** su estado
-> actual (el SQL usa `COALESCE`), de modo que editar el texto nunca despliega
-> una hoja por accidente.
+> actual, de modo que editar el texto nunca despliega una hoja por accidente.
 
 ---
 
@@ -236,7 +236,7 @@ Cubren el ciclo completo del CRUD (crear, listar, consultar, actualizar,
 plegar, eliminar), la validación de datos, los códigos `404` y el manejador de
 rutas inexistentes.
 
-> **Última ejecución:** 11/11 pruebas aprobadas, contra MariaDB 13.0.2.
+> **Última ejecución:** 11/11 pruebas aprobadas.
 > El CRUD también se verificó de extremo a extremo desde la interfaz
 > (crear desde el formulario y ver la tarjeta nueva en la lista).
 
@@ -277,7 +277,7 @@ Para dar una **URL pública** sin desplegar nada (útil para una demo), se compi
 y se abre un túnel con `cloudflared`. Para un despliegue **permanente** en la
 nube hay una guía paso a paso con Render + MySQL gratuito:
 
-📄 **[`docs/despliegue.md`](docs/despliegue.md)** — las tres opciones, con los
+**[`docs/despliegue.md`](docs/despliegue.md)** - las tres opciones, con los
 comandos exactos y una tabla de solución de problemas.
 
 ---
@@ -290,9 +290,9 @@ comandos exactos y una tabla de solución de problemas.
 - **ORM Prisma** en vez de SQL escrito a mano: las consultas se construyen con
   el cliente tipado (`prisma.hoja.findMany`, `.create`, `.update`, `.delete`),
   sin concatenar cadenas, lo que evita la inyección SQL.
-- **Figura de origami 3D sin librerías**: el volteo usa CSS
-  (`perspective` + `transform-style: preserve-3d` + `rotateY`), como la tarjeta
-  de la cívica, en lugar de cargar Three.js.
+- **Figura de origami 3D sin librerías**: la grulla se arma con transformaciones
+  CSS 3D (`perspective`, `rotateX`/`rotateY` y `clip-path`), en lugar de cargar
+  Three.js.
 - **Validación en el servidor**, no solo en el formulario.
 - **Usuario de base de datos dedicado** (`origami`) en lugar de `root`.
 - **Credenciales fuera del repositorio**: `.env` está en `.gitignore` y solo se
@@ -305,6 +305,6 @@ comandos exactos y una tabla de solución de problemas.
 
 ## Autor
 
-Proyecto desarrollado como entrega final para el **SENA — Técnica en Desarrollo de Software**.
+Proyecto desarrollado como entrega final para el **SENA, Técnica en Desarrollo de Software**.
 
 Distribuido bajo licencia **MIT** (ver `LICENSE`).

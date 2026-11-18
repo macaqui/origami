@@ -1,7 +1,7 @@
 # Despliegue y demo
 
-Tres formas de mostrar Origami, de la más segura a la más "profesional". Usa la
-**A** como plan principal y la **B** como as bajo la manga.
+Tres formas de mostrar Origami. El plan A es el principal y el B sirve para dar
+una URL pública sin desplegar nada.
 
 | Plan | ¿Necesitas cuentas? | ¿Necesitas internet? | Duración | Para qué sirve |
 | --- | --- | --- | --- | --- |
@@ -17,7 +17,7 @@ Tres formas de mostrar Origami, de la más segura a la más "profesional". Usa l
 
 ---
 
-## Plan A — Demo local (la de siempre, garantizada)
+## Plan A - Demo local (la más segura)
 
 ```bash
 # 1. Base de datos (una sola vez)
@@ -36,17 +36,16 @@ npm run dev                       # http://localhost:5173
 ```
 
 **Para probarlo:** abre `http://localhost:5173`, crea una hoja, edítala,
-pliégala, usa el buscador y el filtro, elimínala. Luego, en una tercera terminal:
+pliégala, usa el buscador y el filtro, elimínala. Para comprobar que los datos
+quedaron en la base de datos, en una tercera terminal:
 
 ```bash
 mariadb -u origami -porigami123 origami_db -e "SELECT id, titulo, plegada FROM hojas;"
 ```
 
-…y explica: *"lo que se ve en pantalla está guardado en MySQL, no en el navegador"*.
-
 ---
 
-## Plan A2 — Windows (en otro PC con Windows)
+## Plan A2 - Windows (en otro PC con Windows)
 
 Windows no trae el comando `cp` y las rutas van con `\`. Para no pelear con eso,
 el repositorio incluye dos scripts que se ejecutan con doble clic:
@@ -89,7 +88,7 @@ crea el usuario para los dos hosts justamente por esto).
 
 ---
 
-## Plan B — URL pública en un minuto, sin crear cuentas ⭐
+## Plan B - URL pública en un minuto, sin crear cuentas
 
 `cloudflared` (paquete oficial en CachyOS) abre un túnel desde tu PC hacia
 internet y te da una URL `https://...` que cualquiera puede abrir.
@@ -127,8 +126,7 @@ cloudflared tunnel --url http://localhost:3001
 
 Abre esa URL: verás la **misma aplicación**, y funciona desde cualquier celular.
 
-**Truco para que salga "desde tu GitHub":** pega la URL en la ficha del repo y
-quedará como enlace "sitio web" en tu perfil:
+Si quieres, registra esa URL como sitio web del repositorio:
 
 ```bash
 gh repo edit macaqui/origami --homepage "https://la-url-que-te-dio.trycloudflare.com"
@@ -144,7 +142,7 @@ gh repo edit macaqui/origami --homepage "https://la-url-que-te-dio.trycloudflare
 
 ---
 
-## Plan C — Nube permanente (opcional)
+## Plan C - Nube permanente (opcional)
 
 Aquí la página ya no depende de tu PC. Necesita dos cuentas gratuitas:
 
@@ -152,8 +150,8 @@ Aquí la página ya no depende de tu PC. Necesita dos cuentas gratuitas:
 
 Opciones sin tarjeta de crédito:
 
-- **db4free.net** — MySQL 8, 200 MB. Registro con correo y confirmación.
-- **Aiven** — MySQL 1 GB, plan "Free" (sin tarjeta).
+- **db4free.net**: MySQL 8, 200 MB. Registro con correo y confirmación.
+- **Aiven**: MySQL 1 GB, plan "Free" (sin tarjeta).
 
 Guarda el **host**, el **puerto**, el **usuario**, la **contraseña** y el
 **nombre de la base**.
@@ -222,14 +220,3 @@ gh repo edit macaqui/origami --homepage "https://origami-xxxx.onrender.com"
 | Windows: `'cp' no se reconoce como comando` | Usaste comandos de Linux | Usa `iniciar-windows.bat`, o `copy` en vez de `cp` |
 | Windows: `Access denied for user 'origami'` | El host de conexión no coincide | En `server\.env`, cambia `localhost` por `127.0.0.1` dentro de `DATABASE_URL` |
 | Windows: `mysql` no se reconoce | MySQL no está en el PATH | Importa la base con MySQL Workbench, o usa `C:\xampp\mysql\bin\mysql.exe` |
-
----
-
-## Qué decir mientras lo muestras
-
-> "El proyecto está separado en tres capas: React, Express y MySQL, y en el
-> backend uso Prisma como ORM. Para
-> desplegarlo aproveché que Express puede servir también la interfaz compilada:
-> así todo queda en **un solo origen**, no hay problemas de CORS y basta una
-> única URL. En desarrollo trabajo con Vite y el backend separados, y con la
-> variable `VITE_API_URL` cambio a dónde apunta el frontend sin tocar el código."

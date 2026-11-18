@@ -16,15 +16,14 @@ CREATE TABLE IF NOT EXISTS hojas (
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Si la base ya existía con "categoria" y "prioridad" como ENUM, las pasamos a
--- VARCHAR: Prisma mapea esos campos como String. Repetirlo no hace daño.
+-- Asegura los tipos de datos aunque la tabla ya existiera de antes.
 ALTER TABLE hojas
   MODIFY categoria VARCHAR(50) DEFAULT 'Desarrollo',
   MODIFY prioridad VARCHAR(20) DEFAULT 'Media';
 
 INSERT INTO hojas (titulo, contenido, categoria, prioridad, plegada) VALUES
 ('Configurar API en Express', 'Crear rutas GET, POST, PUT y DELETE conectadas a MySQL.', 'Desarrollo', 'Alta', 1),
-('Revisar script SQL', 'Verificar tipos de datos ENUM y llave primaria autoincremental.', 'Base de Datos', 'Media', 0),
+('Revisar script SQL', 'Verificar los tipos de datos y la llave primaria autoincremental.', 'Base de Datos', 'Media', 0),
 ('Documentar el proyecto', 'Escribir el README y las instrucciones de uso.', 'Estudio', 'Alta', 0);
 
 -- Usuario de la aplicación (evita que el backend se conecte como root).

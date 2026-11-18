@@ -1,18 +1,17 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 
-// Cliente único de Prisma (ORM). Todas las consultas a MySQL/MariaDB pasan por
-// aquí, así que no hay SQL escrito a mano en los controladores.
+// Cliente único de Prisma. Toda la aplicación consulta la base de datos por aquí.
 const prisma = new PrismaClient();
 
-// Verificación inicial de conexión para detectar errores rápido.
+// Prueba la conexión al arrancar para detectar errores de configuración rápido.
 prisma
   .$connect()
   .then(() => {
-    console.log('✅ Conexión exitosa a MySQL (origami_db) vía Prisma');
+    console.log('Conexión a la base de datos establecida (Prisma + MySQL)');
   })
   .catch((error) => {
-    console.error('❌ Error conectando a MySQL:', error.message);
+    console.error('No se pudo conectar a la base de datos:', error.message);
   });
 
 export default prisma;

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-// El estado inicial se deriva de la prop `hojaEditando`. Para cambiar de hoja
-// (o volver al modo creación) App remonta el componente con una `key` distinta,
-// así que no hace falta ningún efecto que sincronice props con estado.
+// Al editar, los campos arrancan con los datos de la hoja. App vuelve a montar
+// el componente con otra `key` al cambiar de hoja, así que el estado inicial
+// siempre sale de la prop.
 function HojaForm({ onGuardar, hojaEditando, onCancelarEdicion }) {
   const [titulo, setTitulo] = useState(hojaEditando?.titulo ?? '');
   const [contenido, setContenido] = useState(hojaEditando?.contenido ?? '');

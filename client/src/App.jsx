@@ -21,9 +21,7 @@ function App() {
   const [hojaEditando, setHojaEditando] = useState(null);
   const [hojaDetalle, setHojaDetalle] = useState(null);
 
-  // Carga inicial desde la API. El estado se actualiza solo dentro de los
-  // callbacks de la promesa, y se ignora el resultado si el componente ya se
-  // desmontó (patrón estándar de limpieza en React).
+  // Carga las hojas desde la API al montar el componente.
   useEffect(() => {
     let activo = true;
 
@@ -90,8 +88,7 @@ function App() {
     }
   };
 
-  // 5.ª petición a la API: trae una sola hoja (GET /api/hojas/:id) y la
-  // muestra junto a la grulla de origami.
+  // Trae una hoja por su id y la muestra en el modal "Ver 3D".
   const handleVer = async (hoja) => {
     try {
       const detalle = await obtenerHoja(hoja.id);
@@ -207,7 +204,7 @@ function App() {
             >
               ×
             </button>
-            <p className="modal-titulo">Vista 3D — Origami</p>
+            <p className="modal-titulo">Vista 3D - Origami</p>
             <Origami3D hoja={hojaDetalle} />
           </div>
         </div>

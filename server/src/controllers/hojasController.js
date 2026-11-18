@@ -1,12 +1,5 @@
 import prisma from '../config/db.js';
 
-// Las 5 operaciones CRUD de la entidad "Hoja", todas con Prisma (ORM).
-//   1. obtenerHojas       -> LEER todas
-//   2. obtenerHojaPorId   -> LEER una
-//   3. crearHoja          -> CREAR
-//   4. actualizarHoja     -> EDITAR
-//   5. eliminarHoja       -> BORRAR
-
 const CATEGORIAS_VALIDAS = ['Desarrollo', 'Base de Datos', 'Estudio', 'Personal'];
 const PRIORIDADES_VALIDAS = ['Baja', 'Media', 'Alta'];
 
@@ -23,7 +16,7 @@ const idValido = (valor) => {
   return Number.isInteger(id) && id > 0 ? id : null;
 };
 
-// GET /api/hojas - Listar todas las hojas (1)
+// GET /api/hojas - Listar todas las hojas
 export const obtenerHojas = async (req, res) => {
   try {
     const hojas = await prisma.hoja.findMany({
@@ -36,7 +29,7 @@ export const obtenerHojas = async (req, res) => {
   }
 };
 
-// GET /api/hojas/:id - Obtener una hoja por su id (2)
+// GET /api/hojas/:id - Obtener una hoja por su id
 export const obtenerHojaPorId = async (req, res) => {
   try {
     const id = idValido(req.params.id);
@@ -56,7 +49,7 @@ export const obtenerHojaPorId = async (req, res) => {
   }
 };
 
-// POST /api/hojas - Crear una nueva hoja (3)
+// POST /api/hojas - Crear una nueva hoja
 export const crearHoja = async (req, res) => {
   try {
     const { titulo, contenido, categoria, prioridad } = req.body;
@@ -83,7 +76,7 @@ export const crearHoja = async (req, res) => {
   }
 };
 
-// PUT /api/hojas/:id - Actualizar una hoja (4)
+// PUT /api/hojas/:id - Actualizar una hoja
 export const actualizarHoja = async (req, res) => {
   try {
     const id = idValido(req.params.id);
@@ -111,7 +104,7 @@ export const actualizarHoja = async (req, res) => {
       prioridad: PRIORIDADES_VALIDAS.includes(prioridad) ? prioridad : 'Media'
     };
 
-    // Solo se modifica "plegada" si el cliente lo envió (antes era un COALESCE).
+    // Solo se modifica "plegada" si el cliente lo envió.
     const plegadaNormalizada = normalizarPlegada(plegada);
     if (plegadaNormalizada !== null) {
       datos.plegada = plegadaNormalizada;
@@ -125,7 +118,7 @@ export const actualizarHoja = async (req, res) => {
   }
 };
 
-// DELETE /api/hojas/:id - Eliminar una hoja (5)
+// DELETE /api/hojas/:id - Eliminar una hoja
 export const eliminarHoja = async (req, res) => {
   try {
     const id = idValido(req.params.id);
