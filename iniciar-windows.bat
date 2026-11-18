@@ -12,19 +12,28 @@ if errorlevel 1 (echo [X] No encontre Node.js. Instalalo desde https://nodejs.or
 
 echo [1/4] Dependencias del backend...
 cd server
-call npm ci
-if errorlevel 1 call npm install
+if exist "node_modules" echo   (ya estaban instaladas, se omiten)
+if not exist "node_modules" call npm ci
+if not exist "node_modules" call npm install
 if not exist ".env" copy ".env.example" ".env" >nul
 echo.
 
 echo [2/4] Dependencias del frontend...
 cd ..\client
-call npm ci
-if errorlevel 1 call npm install
+if exist "node_modules" echo   (ya estaban instaladas, se omiten)
+if not exist "node_modules" call npm ci
+if not exist "node_modules" call npm install
 echo.
 
 echo [3/4] Compilando la interfaz...
 call npm run build
+if not exist "dist\index.html" (
+  echo.
+  echo [X] La interfaz no se pudo compilar. Causas tipicas:
+  echo     - Este PC no tiene internet y las dependencias no estaban instaladas.
+  echo     - En ese caso usa  arrancar-sin-internet.bat  ^(la version que ya trae todo^).
+  echo.
+)
 echo.
 
 echo [4/4] Arrancando el servidor...
