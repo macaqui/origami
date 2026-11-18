@@ -68,6 +68,7 @@ origami/
 │   └── despliegue.md           # Cómo publicarlo online (3 opciones)
 ├── .github/workflows/ci.yml    # Integración continua (pruebas + build automáticos)
 ├── iniciar-windows.bat         # Arranque automático en Windows
+├── preparar-base-de-datos.bat  # Crea la base en MySQL (solo la primera vez)
 ├── .gitattributes              # Fuerza saltos de línea CRLF en los .bat
 ├── LICENSE
 ├── .gitignore
@@ -123,16 +124,15 @@ npm run dev               # http://localhost:5173
 ### Opción C — Windows (arranque automático)
 
 Windows no tiene el comando `cp` y las rutas usan `\`, así que el proyecto
-incluye un script que hace todo por ti: comprueba Node.js, importa la base de
-datos la primera vez, crea el `.env`, instala las dependencias, compila la
-interfaz y arranca el servidor.
+incluye dos scripts que se ejecutan con doble clic:
 
-```bat
-iniciar-windows.bat
-```
+| Script | Cuándo | Qué hace |
+| --- | --- | --- |
+| `preparar-base-de-datos.bat` | **Solo la primera vez** | Importa `server\database.sql` en MySQL (puede pedirte la contraseña de `root`; si no tiene, pulsa Enter) |
+| `iniciar-windows.bat` | **Cada vez** | Crea el `.env`, instala las dependencias, compila la interfaz y arranca el servidor |
 
-Luego abre `http://localhost:3001` (interfaz y API en el mismo enlace). Si
-prefieres el paso a paso manual:
+Luego abre `http://localhost:3001`: la interfaz y la API quedan en el mismo
+enlace. Si prefieres el paso a paso manual:
 
 ```bat
 mysql -u root -p < server\database.sql
