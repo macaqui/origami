@@ -1,0 +1,727 @@
+/* Origami - interfaz de papel */
+
+:root {
+  --fondo: #f4efe4;
+  --papel: #fffdf8;
+  --papel-2: #efe2c9;
+  --papel-3: #e3cfa6;
+  --papel-4: #d8bf90;
+  --tinta: #2e2418;
+  --tinta-suave: #7a6a52;
+  --linea: #e0d3bb;
+  --linea-fuerte: #cbb894;
+  --acento: #c1432a;
+  --acento-osc: #9a3120;
+  --verde: #4d7a45;
+  --sombra: rgba(93, 63, 34, 0.14);
+  --sombra-fuerte: rgba(93, 63, 34, 0.26);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--tinta);
+  background-color: var(--fondo);
+  background-image:
+    radial-gradient(circle at 16% 10%, rgba(227, 207, 166, 0.5), transparent 42%),
+    radial-gradient(circle at 84% 6%, rgba(216, 191, 144, 0.38), transparent 38%),
+    radial-gradient(circle at 50% 104%, rgba(227, 207, 166, 0.45), transparent 55%);
+  background-attachment: fixed;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.contenedor-app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+/* Portada */
+
+.hero {
+  display: grid;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1rem 0 2.5rem;
+  border-bottom: 2px solid var(--linea);
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 820px) {
+  .hero {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 2rem;
+  }
+}
+
+.hero-etiqueta {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.hero h1 {
+  margin: 0.25rem 0 0.7rem;
+  font-family: ui-serif, Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.hero-descripcion {
+  margin: 0 0 1.3rem;
+  max-width: 46ch;
+  color: var(--tinta-suave);
+  font-size: 1.02rem;
+}
+
+.hero-descripcion strong {
+  color: var(--tinta);
+}
+
+.resumen-contadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.resumen-contadores span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+  box-shadow: 0 2px 0 var(--linea);
+}
+
+.resumen-contadores strong {
+  font-size: 1rem;
+  color: var(--tinta);
+}
+
+.hero-figura {
+  position: relative;
+  height: clamp(230px, 32vw, 340px);
+}
+
+/* Mensaje de error */
+
+.banner-error {
+  background: #fbe9e4;
+  border: 1px solid #e6b3a6;
+  border-left: 5px solid var(--acento);
+  color: var(--acento-osc);
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+/* Tablero */
+
+.layout-principal {
+  display: grid;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .layout-principal {
+    grid-template-columns: 340px 1fr;
+  }
+
+  .columna-form {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+/* Formulario */
+
+.origami-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  padding: 1.5rem 1.35rem 1.6rem;
+  box-shadow: 0 12px 26px var(--sombra), 0 2px 0 var(--linea);
+}
+
+.origami-form h2 {
+  margin: 0;
+  font-family: ui-serif, Georgia, serif;
+  font-size: 1.35rem;
+}
+
+.origami-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.origami-form input,
+.origami-form select,
+.origami-form textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--tinta);
+  background: #fffefb;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 6px;
+  padding: 0.6rem 0.7rem;
+}
+
+.origami-form input:focus,
+.origami-form select:focus,
+.origami-form textarea:focus {
+  outline: 2px solid rgba(193, 67, 42, 0.3);
+  border-color: var(--acento);
+}
+
+.origami-form textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.fila-selects {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.alerta-error {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  background: #fbe9e4;
+  border: 1px solid #e6b3a6;
+  border-radius: 6px;
+  color: var(--acento-osc);
+  font-size: 0.88rem;
+}
+
+.acciones-form {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.btn-primario,
+.btn-secundario {
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.btn-primario {
+  background: var(--acento);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--acento-osc);
+}
+
+.btn-primario:hover {
+  background: var(--acento-osc);
+}
+
+.btn-primario:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--acento-osc);
+}
+
+.btn-secundario {
+  background: var(--papel-2);
+  color: var(--tinta);
+  box-shadow: 0 3px 0 var(--linea-fuerte);
+}
+
+.btn-secundario:hover {
+  background: var(--papel-3);
+}
+
+/* Panel de hojas */
+
+.panel-hojas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.barra-filtros {
+  display: grid;
+  gap: 0.7rem;
+}
+
+@media (min-width: 620px) {
+  .barra-filtros {
+    grid-template-columns: 1fr 220px;
+  }
+}
+
+.barra-filtros input,
+.barra-filtros select {
+  width: 100%;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--tinta);
+  background: var(--papel);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+}
+
+.barra-filtros input:focus,
+.barra-filtros select:focus {
+  outline: 2px solid rgba(193, 67, 42, 0.28);
+  border-color: var(--acento);
+}
+
+.grid-hojas {
+  display: grid;
+  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+/* Tarjetas */
+
+.hoja-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  padding: 1.15rem 1.1rem 1rem;
+  box-shadow: 0 8px 18px var(--sombra);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Esquina doblada, como una hoja de papel. */
+.hoja-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(225deg, var(--papel-3) 0 50%, transparent 50%);
+  border-bottom-left-radius: 6px;
+  box-shadow: -2px 2px 3px rgba(93, 63, 34, 0.12);
+}
+
+.hoja-card:hover {
+  transform: translateY(-4px) rotate(-0.35deg);
+  box-shadow: 0 16px 30px var(--sombra-fuerte);
+}
+
+.hoja-card.plegada {
+  background: #f8f3e9;
+}
+
+.hoja-card.plegada::before {
+  background: linear-gradient(225deg, var(--linea) 0 50%, transparent 50%);
+}
+
+.hoja-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.badge-categoria,
+.badge-prioridad {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge-categoria {
+  background: var(--papel-2);
+  border: 1px solid var(--linea-fuerte);
+  color: #6b5330;
+}
+
+.prio-baja {
+  background: #e4efe0;
+  border: 1px solid #bcd6b4;
+  color: #3f6636;
+}
+
+.prio-media {
+  background: #fbf0d5;
+  border: 1px solid #e8d09a;
+  color: #8a6412;
+}
+
+.prio-alta {
+  background: #fbe2da;
+  border: 1px solid #eab4a5;
+  color: var(--acento-osc);
+}
+
+.hoja-card h3 {
+  margin: 0.1rem 0 0;
+  font-family: ui-serif, Georgia, serif;
+  font-size: 1.12rem;
+  line-height: 1.25;
+}
+
+.hoja-contenido {
+  flex: 1;
+  margin: 0;
+  color: var(--tinta-suave);
+  font-size: 0.92rem;
+}
+
+.hoja-card.plegada h3 {
+  text-decoration: line-through;
+  text-decoration-color: var(--linea-fuerte);
+}
+
+.hoja-card.plegada h3,
+.hoja-card.plegada .hoja-contenido {
+  opacity: 0.6;
+}
+
+.hoja-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--linea-fuerte);
+}
+
+.hoja-fecha {
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: var(--tinta-suave);
+}
+
+.hoja-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.hoja-botones button {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem;
+  border-radius: 5px;
+  background: var(--papel-2);
+  border: 1px solid var(--linea-fuerte);
+  color: var(--tinta);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.hoja-botones button:hover {
+  background: var(--papel-3);
+}
+
+.hoja-botones .btn-ver {
+  background: #fbe2da;
+  border-color: #eab4a5;
+  color: var(--acento-osc);
+}
+
+.hoja-botones .btn-ver:hover {
+  background: var(--acento);
+  border-color: var(--acento-osc);
+  color: #fff;
+}
+
+.hoja-botones .btn-eliminar {
+  color: var(--acento-osc);
+}
+
+.hoja-botones .btn-eliminar:hover {
+  background: var(--acento);
+  border-color: var(--acento-osc);
+  color: #fff;
+}
+
+.estado-vacio {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--tinta-suave);
+  background: var(--papel);
+  border: 1px dashed var(--linea-fuerte);
+  border-radius: 10px;
+}
+
+/* Modal "Ver 3D" */
+
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(46, 36, 24, 0.55);
+  backdrop-filter: blur(3px);
+  animation: modal-aparecer 0.2s ease;
+}
+
+@keyframes modal-aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-contenido {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  width: min(94vw, 780px);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 1.6rem 1.4rem 1.4rem;
+  background: var(--papel);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 14px;
+  box-shadow: 0 30px 60px rgba(46, 36, 24, 0.4);
+}
+
+.modal-titulo {
+  margin: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.modal-cerrar {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 6px;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--tinta-suave);
+}
+
+.modal-cerrar:hover {
+  background: var(--papel-2);
+  color: var(--tinta);
+}
+
+.vista-3d {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  width: 100%;
+}
+
+.vista-3d-figura {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.vista-3d-pista {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+  color: var(--tinta-suave);
+}
+
+.vista-3d-datos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: center;
+}
+
+.vista-3d-datos h3 {
+  margin: 0.2rem 0 0;
+  font-family: ui-serif, Georgia, serif;
+  font-size: 1.3rem;
+}
+
+.origami-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.origami-detalle {
+  margin: 0;
+  color: var(--tinta-suave);
+  font-size: 0.95rem;
+}
+
+.origami-estado {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: #e4efe0;
+  border: 1px solid #bcd6b4;
+  color: var(--verde);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.origami-estado.plegada {
+  background: var(--papel-2);
+  border-color: var(--linea-fuerte);
+  color: var(--tinta-suave);
+}
+
+@media (min-width: 720px) {
+  .vista-3d {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  .vista-3d-figura {
+    flex: 0 0 46%;
+    height: 330px;
+  }
+
+  .vista-3d-datos {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .origami-badges {
+    justify-content: flex-start;
+  }
+}
+
+/* La grulla de origami (bisagras en 3D) */
+
+.grulla-escena {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 760px;
+  perspective-origin: 50% 44%;
+}
+
+.hero-figura .grulla-escena {
+  pointer-events: none;
+}
+
+/* Sombra en el suelo, para que la figura no flote en el vacío. */
+.grulla-escena::after {
+  content: '';
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  width: 170px;
+  height: 26px;
+  margin-left: -85px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(93, 63, 34, 0.3), rgba(93, 63, 34, 0) 70%);
+  pointer-events: none;
+}
+
+.grulla-escena-pivote {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.grulla-bisagra {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform-origin: 0 0;
+}
+
+.grulla-cara {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  backface-visibility: visible;
+  clip-path: var(--clip);
+  background: #efe2c9;
+}
+
+.grulla-cara::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: var(--clip);
+  background: #5d3f22;
+  opacity: var(--sh, 0);
+}
+
+/* Accesibilidad */
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-fondo {
+    animation: none;
+  }
+
+  .hoja-card,
+  .btn-primario,
+  .btn-secundario {
+    transition: none;
+  }
+}

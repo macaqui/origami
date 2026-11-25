@@ -1,0 +1,25 @@
+// La conexion de Prisma con sqlite pa guardar las hojas
+
+generator client {
+  provider = "prisma-client-js"
+
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Cada hoja es una nota
+model Hoja {
+  id             Int      @id @default(autoincrement())
+  titulo         String
+  contenido      String
+  categoria      String?  @default("Desarrollo")
+  prioridad      String?  @default("Media")
+  plegada        Boolean  @default(false)
+  fecha_creacion DateTime @default(now())
+
+  @@map("hojas")
+}
